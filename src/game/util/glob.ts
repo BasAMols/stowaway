@@ -7,7 +7,8 @@ interface DollarGlobal {
     tick: TickerReturnData;
     game: StowawayGame,
     canvas: Canvas,
-    container: Vector2
+    container: Vector2,
+    day: number
 }
 
 declare global {

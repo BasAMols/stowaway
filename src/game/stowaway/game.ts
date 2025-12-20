@@ -5,22 +5,19 @@ import { Sky } from "./env/sky";
 import { Wave } from "./env/wave";
 
 export class StowawayGame extends BaseGame {
-    duration: number = 0;
+    msPerDay: number = 60000;
 
     constructor(canvas: HTMLCanvasElement) {
         super(canvas);
-        new Sky().add('sky', this, -1);
-        new Wave(new Vector2(0, 440 + 100), 10, 4, "#0000aa", 0.0005).add('wave1', this, 10);
-        new Wave(new Vector2(0, 500 + 100), 20, 3.5, "#0000cc", 0.0005).add('wave2', this, 20);
-        new Wave(new Vector2(0, 570 + 100), 30, 2.8, "#0000ee", 0.0005).add('wave3', this, 30);
+        const sky = new Sky().add('sky', this, -1) as Sky;
+        new Wave(new Vector2(0, 440 + 100), 7, 4, "#263342", 0.0005).add('wave1', this, 10);
         new Ship().add('ship', this, 35);
-        new Wave(new Vector2(0, 600 + 100), 30, 2.8, "#0000ee", 0.0005).add('wave3D', this, 40);
+        new Wave(new Vector2(0, 600 + 100), 12, 2.4, "#263342", 0.0005).add('wave3D', this, 40);
+        new Wave(new Vector2(0, 600 + 70), 14, 2, "#263342", 0.0003).add('wave3D2', this, 45).setOpacity(0.8);
+
+        sky.overlays.forEach((overlay) => {
+            overlay.element.add(overlay.name, this, overlay.order);
+        });
     }
 
-    preRender(): void {
-        this.duration += $.tick.deltaTime;
-    }
-
-    override render(): void {
-    }
 }

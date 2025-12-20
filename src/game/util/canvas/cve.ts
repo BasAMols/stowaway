@@ -16,6 +16,14 @@ export class CVE {
     }
 
     transform: Transform2d;
+
+    opacity: number = 1;
+
+    setOpacity(opacity: number) {
+        this.opacity = opacity;
+        return this;
+    }
+
     constructor() {
         this.transform = new Transform2d();
     }
@@ -35,6 +43,7 @@ export class CVE {
 
         this.parent = parent;
         this.order = order;
+        return this;
     }
     preTransform() {
         // void
@@ -52,6 +61,7 @@ export class CVE {
         $.canvas.save();
         this.preTransform();
         this.transform.apply($.canvas.ctx);
+        $.canvas.ctx.globalAlpha = this.opacity;
         this.preRender();
         for (const child of Object.values(this.below).sort((a, b) => a.order - b.order)) {
             child.tick();

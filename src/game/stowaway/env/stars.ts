@@ -1,3 +1,4 @@
+import { timeEaser } from "src/game/util/math/timeEaser";
 import { CVE } from "../../util/canvas/cve";
 import { Vector2 } from "../../util/math/vector2";
 
@@ -31,6 +32,14 @@ export class Stars extends CVE {
     }
 
     render() {
+
+        this.opacity = timeEaser(($.day % 1) * 24, [
+            [3, 1],
+            [6, 0],
+            [19, 0],
+            [22, 1],
+        ], 24);
+
         this.checkRenderSize();
         for (const star of this.stars) {
             $.canvas.draw.circle(star.position, star.size, 'white');

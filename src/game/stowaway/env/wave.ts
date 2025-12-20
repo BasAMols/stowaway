@@ -1,8 +1,10 @@
+import { timeEaser } from "src/game/util/math/timeEaser";
 import { CVE } from "../../util/canvas/cve";
 import { Vector2 } from "../../util/math/vector2";
+import { Utils } from "src/game/util/math/util";
 
 export class Wave extends CVE {
-    constructor(private position: Vector2, private height: number, private frequency: number, private color: string, private speed: number = 0.0005) {
+    constructor(private position: Vector2, private height: number, private frequency: number, public color: string, private speed: number = 0.0005) {
         super();
         this.transform.setPosition(this.position);
     }
@@ -12,6 +14,14 @@ export class Wave extends CVE {
     }
 
     drawSine(totalWidth: number, waveHeight: number, frequency: number, totalHeight: number, offset: number, color: string, resolution: number = 1) {
+
+
+        this.color = Utils.easeColor(timeEaser($.day % 1 * 24, [
+            [5, 1],
+            [7, 0],
+            [16, 0],
+            [18, 1],
+        ], 24), [28, 42, 58, 1], [90, 130, 180, 1]);
 
         const waveWidthBase = 1920;
         const polygon: Vector2[] = [];

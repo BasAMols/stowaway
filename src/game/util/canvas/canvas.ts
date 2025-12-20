@@ -14,6 +14,16 @@ export class Canvas {
         window.addEventListener('resize', this.resize.bind(this));
     }
 
+    static gradient = {
+        radial: (position: Vector2, radius: number, stops: [number, string][]) => {
+            const gradient = $.canvas.ctx.createRadialGradient(position.x, position.y, 0, position.x, position.y, radius);
+            for (const stop of stops) {
+                gradient.addColorStop(stop[0], stop[1]);
+            }
+            return gradient;
+        }
+    }
+
     resize() {
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -80,5 +90,8 @@ export class Canvas {
             this.ctx.closePath();
             this.ctx.fill();
         },
+        image: (image: HTMLImageElement, position: Vector2, size: Vector2) => {
+            this.ctx.drawImage(image, position.x, position.y, size.x, size.y);
+        }
     }
 }
