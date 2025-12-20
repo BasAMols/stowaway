@@ -17,7 +17,6 @@ export default defineConfigWithVueTs(
         // ignores: []
     },
 
-    pluginQuasar.configs.recommended(),
     js.configs.recommended,
 
     /**
@@ -71,13 +70,13 @@ export default defineConfigWithVueTs(
             'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
             'no-unused-vars': 'off',
             '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+            '@typescript-eslint/no-this-alias': 'off',
             '@typescript-eslint/consistent-type-imports': [
                 'off',
             ],
-            "strictPropertyInitialization": false,
 
         },
-        "strictPropertyInitialization": false,
     },
 
     {

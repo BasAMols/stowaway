@@ -7,6 +7,6 @@ export class Utils {
         if (!match) {
             throw new Error(`Invalid color: ${color}`);
         }
-        return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3]), match[4] ? parseInt(match[4]) : 1];
+        return [parseInt(match[1]!), parseInt(match[2]!), parseInt(match[3]!), match[4] ? parseInt(match[4]!) : 1];
     }
 }

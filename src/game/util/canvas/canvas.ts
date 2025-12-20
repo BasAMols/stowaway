@@ -1,10 +1,10 @@
-import { Vector2 } from "./util/math/vector2";
+import { Vector2 } from "../math/vector2";
 
 export class Canvas {
     cvs: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    constructor() {
-        this.cvs = document.createElement('canvas');
+    constructor(cvs: HTMLCanvasElement) {
+        this.cvs = cvs;
         this.cvs.width = window.innerWidth;
         this.cvs.height = window.innerHeight;
         this.ctx = this.cvs.getContext('2d')!;
@@ -17,8 +17,7 @@ export class Canvas {
         const height = window.innerHeight;
         this.cvs.width = width;
         this.cvs.height = height;
-        this.cvs.style.width = width + 'px';
-        this.cvs.style.height = height + 'px';
+        $.container = new Vector2(width, height);
     }
     save() {
         this.ctx.save();

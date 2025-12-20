@@ -1,4 +1,4 @@
-import { Transform2d } from "./util/math/transform";
+import { Transform2d } from "../math/transform";
 
 export class CVE {
 
@@ -52,9 +52,9 @@ export class CVE {
         // void
     }
     tick() {
-        canvas.save();
+        $.canvas.save();
         this.preTransform();
-        this.transform.apply(canvas.ctx);
+        this.transform.apply($.canvas.ctx);
         this.preRender();
         for (const child of Object.values(this.below)) {
             child.tick();
@@ -64,6 +64,6 @@ export class CVE {
             child.tick();
         }
         this.postRender();
-        canvas.restore();
+        $.canvas.restore();
     }
 }
