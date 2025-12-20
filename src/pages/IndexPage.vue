@@ -1,6 +1,6 @@
 <template>
     <q-page class="">
-        <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
+        <canvas ref="canvasRef"></canvas>
     </q-page>
 </template>
 

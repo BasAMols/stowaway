@@ -27,11 +27,8 @@ export class CVE {
         parent.children[name] = this;
         if (order < 0) {
             parent.below[name] = this;
-            parent.below = Object.fromEntries(Object.entries(parent.below).sort((a, b) => a[1].order - b[1].order));
         } else if (order > 0) {
             parent.above[name] = this;
-            parent.above = Object.fromEntries(Object.entries(parent.below).sort((a, b) => a[1].order - b[1].order));
-
         } else {
             throw new Error(`Order must be less than 0 or greater than 0`);
         }
@@ -56,14 +53,23 @@ export class CVE {
         this.preTransform();
         this.transform.apply($.canvas.ctx);
         this.preRender();
-        for (const child of Object.values(this.below)) {
+        for (const child of Object.values(this.below).sort((a, b) => a.order - b.order)) {
             child.tick();
         }
         this.render();
-        for (const child of Object.values(this.above)) {
+        for (const child of Object.values(this.above).sort((a, b) => a.order - b.order)) {
             child.tick();
         }
         this.postRender();
         $.canvas.restore();
+    }
+    get transforms(): Transform2d[] {
+        const transforms: Transform2d[] = [];
+        let current: CVE | undefined = this;
+        while (current) {
+            transforms.push(current.transform);
+            current = current.parent;
+        }
+        return transforms;
     }
 }

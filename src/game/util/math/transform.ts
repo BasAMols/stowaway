@@ -4,9 +4,7 @@ export class Transform2d {
     private _position: Vector2 = new Vector2(0, 0);
     private _rotation: number = 0; // in degrees
     private _scale: Vector2 = new Vector2(1, 1);
-    private _anchor: Vector2 = new Vector2(0, 0); // normalized 0-1 or pixel values
-
-    private _cachedMatrix: [number, number, number, number, number, number] | null = [1, 0, 0, 1, 0, 0];
+    private _anchor: Vector2 = new Vector2(0, 0); // pixel values
 
     public constructor() {
     }
@@ -23,15 +21,11 @@ export class Transform2d {
         } else {
             this._position = value.clone();
         }
-        this._cachedMatrix = null;
-        this.calculateMatrix();
         return this
     }
 
     public move(value: Vector2) {
         this._position = this._position.add(value);
-        this._cachedMatrix = null;
-        this.calculateMatrix();
         return this
     }
 
@@ -41,15 +35,11 @@ export class Transform2d {
 
     public setRotation(value: number) {
         this._rotation = value;
-        this._cachedMatrix = null;
-        this.calculateMatrix();
         return this
     }
 
     public rotate(value: number) {
         this._rotation = this._rotation + value;
-        this._cachedMatrix = null;
-        this.calculateMatrix();
         return this
     }
 
@@ -63,11 +53,8 @@ export class Transform2d {
         } else {
             this._scale = value.clone();
         }
-        this._cachedMatrix = null;
-        this.calculateMatrix();
         return this
     }
-
 
     public get anchor(): Vector2 {
         return this._anchor.clone();
@@ -75,66 +62,130 @@ export class Transform2d {
 
     public setAnchor(value: Vector2) {
         this._anchor = value.clone();
-        this._cachedMatrix = null;
-        this.calculateMatrix();
         return this
     }
 
     /**
-     * Gets the anchor point in pixels.
-     * If anchor values are between 0-1, they're treated as normalized (0-1 range).
-     * Otherwise, they're treated as pixel values.
+     * Applies the transform to the canvas context.
+     * 
+     * Transformation order for proper anchor point handling:
+     * 1. Translate to position (moves the element to its local position)
+     * 2. Translate to anchor point (moves origin to where rotation/scale should happen)
+     * 3. Rotate around anchor
+     * 4. Scale around anchor
+     * 5. Translate back by negative anchor (so drawing at 0,0 is relative to element's origin)
+     * 
+     * This ensures:
+     * - Position is independent of anchor point
+     * - Rotation and scaling occur around the anchor point
+     * - Drawing at local (0,0) draws from the element's top-left corner
      */
-    private getAnchorPoint(): Vector2 {
-        return this._anchor;
+    apply(ctx: CanvasRenderingContext2D) {
+        // 1. Translate to position (moves element to its local position)
+        ctx.translate(this._position.x, this._position.y);
+
+        // 2. Translate to anchor point (so rotation/scale happen around it)
+        ctx.translate(this._anchor.x, this._anchor.y);
+
+        // 3. Rotate (in radians) - rotates around the anchor point
+        const rotationRad = (this._rotation * Math.PI) / 180;
+        ctx.rotate(rotationRad);
+
+        // 4. Scale - scales around the anchor point
+        ctx.scale(this._scale.x, this._scale.y);
+
+        // 5. Translate back by negative anchor (so 0,0 is the element's origin)
+        ctx.translate(-this._anchor.x, -this._anchor.y);
     }
 
     /**
-     * Calculates and caches the CSS transform matrix string.
-     * The matrix combines: translation, rotation, and scale with proper anchor point handling.
+     * Calculates the combined world transform from an array of transforms.
+     * The array should be ordered from child to parent (as returned by CVE.transforms).
      * 
-     * Transformation order: T(-anchor) -> Scale -> Rotate -> T(anchor) -> T(position)
-     * This ensures transformations occur around the anchor point, then the element is moved to position.
+     * @param transforms Array of transforms from child to parent
+     * @returns Object containing world position (of origin), anchor position (in world space), rotation (degrees), and scale
      */
-    private calculateMatrix(): void {
-        const anchorPoint = this.getAnchorPoint();
-        const rotationRad = (this._rotation * Math.PI) / 180;
-        const cos = Math.cos(rotationRad);
-        const sin = Math.sin(rotationRad);
-        const sx = this._scale.x;
-        const sy = this._scale.y;
-
-        const anchorX = anchorPoint.x;
-        const anchorY = anchorPoint.y;
-
-        // Matrix multiplication: T(position) * T(anchor) * R * S * T(-anchor)
-        // CSS matrix format: matrix(a, b, c, d, e, f) represents:
-        // [a c e]
-        // [b d f]
-        // [0 0 1]
-
-        // Calculate rotation-scale matrix: R * S
-        const a = sx * cos;
-        const b = sx * sin;
-        const c = -sy * sin;
-        const d = sy * cos;
-
-        // Apply anchor point transformation
-        // Matrix chain: T(position) * T(anchor) * R * S * T(-anchor)
-        // After R*S*T(-anchor): translation = (-sx*anchorX*cos + sy*anchorY*sin, -sx*anchorX*sin - sy*anchorY*cos)
-        // After T(anchor): add anchor back = (anchorX - sx*anchorX*cos + sy*anchorY*sin, anchorY - sx*anchorX*sin - sy*anchorY*cos)
-        // After T(position): add position = (px + anchorX - sx*anchorX*cos + sy*anchorY*sin, py + anchorY - sx*anchorX*sin - sy*anchorY*cos)
-        // Note: c = -sy*sin, so -anchorY*c = sy*anchorY*sin (positive)
-        const e = this._position.x + anchorX - (anchorX * a) - (anchorY * c);
-        const f = this._position.y + anchorY - (anchorX * b) - (anchorY * d);
-
-        this._cachedMatrix = [a, b, c, d, e, f];
-    }
-
-    apply(ctx: CanvasRenderingContext2D) {
-        if (this._cachedMatrix) {
-            ctx.transform(...this._cachedMatrix);
+    static calculateWorldTransform(transforms: Transform2d[]): {
+        position: Vector2;
+        anchorPosition: Vector2;
+        rotation: number;
+        scale: Vector2;
+    } {
+        if (transforms.length === 0) {
+            return {
+                position: new Vector2(0, 0),
+                anchorPosition: new Vector2(0, 0),
+                rotation: 0,
+                scale: new Vector2(1, 1)
+            };
         }
+
+        // Start with the first (innermost child) transform
+        const childTransform = transforms[0];
+        let worldPosition = childTransform.position.clone();
+        // Transform anchor offset through child's own rotation and scale first
+        const childRotationRad = (childTransform.rotation * Math.PI) / 180;
+        const childCos = Math.cos(childRotationRad);
+        const childSin = Math.sin(childRotationRad);
+        const childAnchor = childTransform.anchor;
+        let worldAnchorOffset = new Vector2(
+            (childAnchor.x * childCos - childAnchor.y * childSin) * childTransform.scale.x,
+            (childAnchor.x * childSin + childAnchor.y * childCos) * childTransform.scale.y
+        );
+        let worldRotation = childTransform.rotation;
+        let worldScale = childTransform.scale.clone();
+
+        // Process from child (first) to parent (last) to build up world transform
+        // transforms[0] is the innermost child, transforms[length-1] is the root parent
+        for (let i = 1; i < transforms.length; i++) {
+            const parentTransform = transforms[i];
+            const parentPos = parentTransform.position;
+            const parentRotation = parentTransform.rotation;
+            const parentScale = parentTransform.scale;
+
+            // Convert parent rotation to radians for calculations
+            const parentRotationRad = (parentRotation * Math.PI) / 180;
+            const cos = Math.cos(parentRotationRad);
+            const sin = Math.sin(parentRotationRad);
+
+            // Transform origin position through parent's transform
+            const rotatedOriginX = worldPosition.x * cos - worldPosition.y * sin;
+            const rotatedOriginY = worldPosition.x * sin + worldPosition.y * cos;
+            const scaledOriginX = rotatedOriginX * parentScale.x;
+            const scaledOriginY = rotatedOriginY * parentScale.y;
+            worldPosition = new Vector2(
+                scaledOriginX + parentPos.x,
+                scaledOriginY + parentPos.y
+            );
+
+            // Transform anchor offset through parent's rotation and scale
+            // (but don't add parent position - it's an offset, not an absolute position)
+            const rotatedAnchorX = worldAnchorOffset.x * cos - worldAnchorOffset.y * sin;
+            const rotatedAnchorY = worldAnchorOffset.x * sin + worldAnchorOffset.y * cos;
+            worldAnchorOffset = new Vector2(
+                rotatedAnchorX * parentScale.x,
+                rotatedAnchorY * parentScale.y
+            );
+
+            // Add rotation (degrees) - rotations are additive
+            worldRotation += parentRotation;
+
+            // Multiply scale - scales are multiplicative
+            worldScale = new Vector2(
+                worldScale.x * parentScale.x,
+                worldScale.y * parentScale.y
+            );
+        }
+
+        // The anchor position is the world position plus the transformed anchor offset
+        const worldAnchorPos = worldPosition.add(worldAnchorOffset);
+
+        return {
+            position: worldPosition,
+            anchorPosition: worldAnchorPos,
+            rotation: worldRotation,
+            scale: worldScale
+        };
     }
 
 }
