@@ -17,6 +17,7 @@ export class Ticker {
      * Starts the ticker using requestAnimationFrame
      */
     public start(): void {
+
         if (this.isRunning) {
             return;
         }

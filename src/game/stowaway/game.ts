@@ -3,21 +3,49 @@ import { Vector2 } from "../util/math/vector2";
 import { Ship } from "./ship";
 import { Sky } from "./env/sky";
 import { Wave } from "./env/wave";
+import { Camera } from "./camera";
 
-export class StowawayGame extends BaseGame {
+export type flags = 'open';
+export class StowawayGame extends BaseGame<flags> {
     msPerDay: number = 60000;
+    camera: Camera;
+    ship: Ship;
 
     constructor(canvas: HTMLCanvasElement) {
-        super(canvas);
-        const sky = new Sky().add('sky', this, -1) as Sky;
-        new Wave(new Vector2(0, 440 + 100), 7, 4, "#263342", 0.0005).add('wave1', this, 10);
-        new Ship().add('ship', this, 35);
-        new Wave(new Vector2(0, 600 + 100), 12, 2.4, "#263342", 0.0005).add('wave3D', this, 40);
-        new Wave(new Vector2(0, 600 + 70), 14, 2, "#263342", 0.0003).add('wave3D2', this, 45).setOpacity(0.8);
+        super(canvas, { open: false });
+
+        this.camera = new Camera();
+        this.ship = new Ship();
+
+        const sky = new Sky();
+
+        this.camera.addToZoomLayer('static', 'sky', sky, 1);
+        // this.camera.addToZoomLayer('ship', 'wave1', new Wave(new Vector2(0, 700), 3, 3, "#263342", 0.0005), 5);
+        // this.camera.addToZoomLayer('ship', 'wave2', new Wave(new Vector2(0, 800 + 150), 6, 2.4, "#263342", 0.0005), 7);
+        this.camera.addToZoomLayer('ship', 'ship', this.ship, 10);
+        // this.camera.addToZoomLayer('ship', 'ship3', new Wave(new Vector2(0, 770 + 150), 4, 2, "#263342", 0.0003), 12);
 
         sky.overlays.forEach((overlay) => {
-            overlay.element.add(overlay.name, this, overlay.order);
+            this.camera.addToZoomLayer('foreground', overlay.name, overlay.element, overlay.order);
         });
+
+        Object.entries(this.camera.zoomLayers).forEach(([key, layer]) => {
+            layer.element.add(key, this, layer.parallax + 100);
+        });
+
+        this.camera.zoom = 1;
+        this.camera.focus = new Vector2(1920 / 2, 1080 / 2);
+    }
+
+    preTransform(): void {
+        this.camera.tick();
+    }
+
+    postRender(): void {
+    }
+
+    applyFlags() {
+        this.ship.open = $.flags.open ? 1 : 0;
     }
 
 }

@@ -1,5 +1,5 @@
 export class Vector2 {
-    public constructor(public x: number, public y: number) {
+    public constructor(public x: number, public y: number = x) {
     }
 
     public add(...args: (number | Vector2)[]): Vector2 {

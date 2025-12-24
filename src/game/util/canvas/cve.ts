@@ -61,7 +61,7 @@ export class CVE {
         $.canvas.save();
         this.preTransform();
         this.transform.apply($.canvas.ctx);
-        $.canvas.ctx.globalAlpha = this.opacity;
+        $.canvas.ctx.globalAlpha = $.canvas.ctx.globalAlpha * this.opacity;
         this.preRender();
         for (const child of Object.values(this.below).sort((a, b) => a.order - b.order)) {
             child.tick();
