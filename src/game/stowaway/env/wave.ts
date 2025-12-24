@@ -4,24 +4,25 @@ import { Vector2 } from "../../util/math/vector2";
 import { Utils } from "src/game/util/math/util";
 
 export class Wave extends CVE {
-    constructor(private position: Vector2, private height: number, private frequency: number, public color: string, private speed: number = 0.0005) {
+    constructor(private y: number, private height: number, private frequency: number, private colorA: [number, number, number, number], private colorB: [number, number, number, number], private speed: number = 0.0005, opacity: number = 1) {
         super();
-        this.transform.setPosition(this.position);
+        this.transform.setPosition(new Vector2(-1920 / 2, this.y));
+        this.opacity = opacity;
     }
 
     render() {
-        this.drawSine($.canvas.cvs.width, this.height, this.frequency, $.canvas.cvs.height, $.tick.elapsedTime * this.speed, this.color, 70);
+        this.drawSine(3840, this.height, this.frequency, 1920, $.tick.elapsedTime * this.speed, this.colorA, this.colorB, 70);
     }
 
-    drawSine(totalWidth: number, waveHeight: number, frequency: number, totalHeight: number, offset: number, color: string, resolution: number = 1) {
+    drawSine(totalWidth: number, waveHeight: number, frequency: number, totalHeight: number, offset: number, colorA: [number, number, number, number], colorB: [number, number, number, number], resolution: number = 1) {
 
 
-        this.color = Utils.easeColor(timeEaser($.day % 1 * 24, [
+        const color = Utils.easeColor(timeEaser($.day % 1 * 24, [
             [5, 1],
             [7, 0],
             [16, 0],
             [18, 1],
-        ], 24), [28, 42, 58, 1], [90, 130, 180, 1]);
+        ], 24), colorA, colorB);
 
         const waveWidthBase = 1920;
         const polygon: Vector2[] = [];

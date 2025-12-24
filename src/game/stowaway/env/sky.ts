@@ -14,19 +14,12 @@ export class Sky extends CVE {
     }[] = [];
     constructor() {
         super();
-        // this.sun = new Sun(this.managers);
-        // this.moon = new Moon(this, this.managers);
-        // this.horizon = new Horizon(this.managers);
-
         new Stars().add('stars', this);
-        const sun = new Sun().add('sun', this, 2) as Sun;
-        this.overlays.push(...sun.overlay);
-        const moon = new Moon().add('moon', this, 3) as Moon;
-        this.overlays.push(...moon.overlay);
+
     }
 
     render() {
-        const color = Utils.easeColor((timeEaser(($.day % 1) * 24, [
+        const color = Utils.easeColor((timeEaser($.time, [
             [5, 0],
             [8, 1],
             [16, 1],

@@ -33,7 +33,7 @@ export class Stars extends CVE {
 
     render() {
 
-        this.opacity = timeEaser(($.day % 1) * 24, [
+        this.opacity = timeEaser($.time, [
             [3, 1],
             [6, 0],
             [19, 0],
