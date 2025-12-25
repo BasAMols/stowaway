@@ -279,22 +279,12 @@ export function getPeople(): CharacterType[] {
         {
             name: "Dave",
             tasks: [
-                new EatTask({ start: 0, end: 1, location: $.mapManager.getLocation("mainDeck00") }),
+                new EatTask({ start: 0, end: 1, location: $.mapManager.getLocation("gunDeck04") }),
                 new EngineTask({ start: 2, end: 10, location: $.mapManager.getLocation("bridgeDeck02") }),
                 new ShowerTask({ start: 10, end: 11, location: $.mapManager.getLocation("bridgeDeckCabin00") }),
                 new SleepTask({ start: 15, end: 23, location: $.mapManager.getLocation("orlopDeck04") }),
                 new EatTask({ start: 23, end: 24, location: $.mapManager.getLocation("gunDeck04") }),
             ],
-            // character: new Character({
-            //     folder: 'm',
-            //     skin: "m/walk.png",
-            //     layers: [
-            //         // "Male_Hair/Male_Hair1",
-            //         // "Male_Clothing/Boots",
-            //         // "Male_Clothing/Shirt",
-            //         // "Male_Clothing/Pants",
-            //     ]
-            // }),
         },
         {
             name: "Jane",

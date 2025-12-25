@@ -21,4 +21,8 @@ export class Loader {
             }
         });
     }
+
+    loadArray(srcs: string[]): Promise<HTMLImageElement[]> {
+        return Promise.all(srcs.map(src => this.loadImage(src)));
+    }
 }

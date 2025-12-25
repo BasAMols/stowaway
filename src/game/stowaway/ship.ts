@@ -19,28 +19,28 @@ export class ShipPart extends CVE {
 
         void $.loader.loadImage('dist/spa/images/ship/animationDay/' + url).then((image) => {
             this.themes.push({
-                timeData: [[9, 0], [11, 1], [15, 1], [17, 0]],
+                timeData: [[8, 0], [11, 1], [14, 1], [17, 0]],
                 image: image,
                 opacity: 1,
             });
         });
         void $.loader.loadImage('dist/spa/images/ship/animationSunSet/' + url).then((image) => {
             this.themes.push({
-                timeData: [[15, 0], [17, 1], [18, 1], [20, 0]],
+                timeData: [[14, 0], [17, 1], [20, 0]],
                 image: image,
                 opacity: 1,
             });
         });
         void $.loader.loadImage('dist/spa/images/ship/animationNight/' + url).then((image) => {
             this.themes.push({
-                timeData: [[5, 1], [7, 0], [18, 0], [20, 1]],
+                timeData: [[5, 1], [8, 0], [17, 0], [20, 1]],
                 image: image,
                 opacity: 1,
             });
         });
         void $.loader.loadImage('dist/spa/images/ship/animationSunRise/' + url).then((image) => {
             this.themes.push({
-                timeData: [[5, 0], [7, 1], [9, 1], [11, 0]],
+                timeData: [[5, 0], [8, 1], [11, 0]],
                 image: image,
                 opacity: 1,
             });
@@ -120,5 +120,6 @@ export class Ship extends CVE {
 
     render() {
         this.transform.setRotation(Math.sin($.tick.elapsedTime * 0.0006) * 1);
+        this.transform.setPosition(new Vector2(Math.sin($.tick.elapsedTime * 0.0003) * 50, -200));
     }
 }

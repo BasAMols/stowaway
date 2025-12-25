@@ -21,7 +21,7 @@ export class StowawayGame extends BaseGame<flags, values> {
     ship: Ship;
 
     constructor(canvas: HTMLCanvasElement) {
-        super(canvas, { open: false, debug: false }, { speed: 1, zoom: 1 });
+        super(canvas, { open: true, debug: false }, { speed: 1, zoom: 2 });
 
         $.game = this;
         $.routeManager = new RouteManager();
@@ -45,12 +45,11 @@ export class StowawayGame extends BaseGame<flags, values> {
         overlays.push(...moon.overlay);
 
         this.camera.addToZoomLayer('static', 'sky', sky, 1);
-        this.camera.addToZoomLayer('horizon', 'sun', sun, 2);
-        this.camera.addToZoomLayer('horizon', 'moon', moon, 3);
-        this.camera.addToZoomLayer('ship', 'wave1', new Wave(700 + 300, 5, 3, [28, 42, 58, 1], [90, 130, 180, 1], 0.0005), 6);
-        this.camera.addToZoomLayer('ship', 'wave2', new Wave(800 + 150 + 300, 7, 2.4, [28, 42, 58, 1], [90, 130, 180, 1], 0.0005), 7);
+        this.camera.addToZoomLayer('static', 'sun', sun, 2);
+        this.camera.addToZoomLayer('static', 'moon', moon, 3);
+        this.camera.addToZoomLayer('static', 'wave1', new Wave(550 + 0, 5, 3, [28, 42, 58, 1], [90, 130, 180, 1], 0.0005), 6);
         this.camera.addToZoomLayer('ship', 'ship', this.ship, 10);
-        this.camera.addToZoomLayer('ship', 'ship4', new Wave(770 + 150 + 300 + 40, 7, 2, [28, 42, 58, 1], [90, 130, 180, 1], 0.0003, 0.75), 13);
+        this.camera.addToZoomLayer('ship', 'ship4', new Wave(1050, 7, 2, [28, 42, 58, 1], [90, 130, 180, 1], 0.0003, 0.75), 13);
 
         overlays.forEach((overlay) => {
             this.camera.addToZoomLayer('foreground', overlay.name, overlay.element, overlay.order);
@@ -60,8 +59,8 @@ export class StowawayGame extends BaseGame<flags, values> {
             layer.element.add(key, this, layer.parallax + 100);
         });
 
-        this.camera.zoom = 1;
-        this.camera.focus = new Vector2(1920 / 2, 600);
+        this.applyFlags();
+        this.applyValues();
     }
 
     preTransform(): void {

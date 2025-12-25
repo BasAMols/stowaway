@@ -45,6 +45,7 @@ export class CVE {
         this.order = order;
         return this;
     }
+
     preTransform() {
         // void
     }
