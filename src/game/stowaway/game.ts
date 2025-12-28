@@ -1,4 +1,4 @@
-import { BaseGame } from "../util/game/baseGame";
+import { BaseGame } from "../util/baseGame";
 import { Vector2 } from "../util/math/vector2";
 import { Sky } from "./env/sky";
 import { Wave } from "./env/wave";
@@ -19,7 +19,7 @@ import { Stars } from "./env/stars";
 export type flags = 'open' | 'debug';
 export type values = 'speed' | 'zoom';
 export class StowawayGame extends BaseGame<flags, values> {
-    msPerDay: number = 60000;
+    msPerDay: number = Infinity;
     camera: Camera;
 
     constructor(canvas: HTMLCanvasElement) {
@@ -47,7 +47,7 @@ export class StowawayGame extends BaseGame<flags, values> {
         new Test();
 
         for (let i = 0; i < 15; i++) {
-            new ShipPart(i.toString().padStart(4, '0') + '-min.png', 0.94 + i * 0.007, i > 9);
+            new ShipPart(i.toString().padStart(4, '0') + '.png', 0.94 + i * 0.01, (0.94 + i * 0.01) > 1.02);
         }
 
         for (let i = 0; i < 20; i++) {
@@ -70,17 +70,18 @@ export class StowawayGame extends BaseGame<flags, values> {
         this.camera.focus = new Vector2(500, 900);
     }
 
+
+
     getTargetPosition(): Vector2 {
         const transform = Transform2d.calculateWorldTransform([$.peopleManager.people.find(person => person.data.name === 'Dave')!.transform, this.transform]);
         return transform.position.add(new Vector2(0, -30));
     }
 
     preTransform(): void {
-        // this.camera.focus = new Vector2(Math.sin($.tick.elapsedTime * 0.0003) * 300 + 1000, 700 + Math.sin($.tick.elapsedTime * 0.0005) * 200);
-        // this.camera.focus = this.ship.getTargetPosition();
-        // this.ship.focus = $.camera.translateCoordinate(this.getTargetPosition(), 1, 1.04);
-        this.camera.tick();
+        if ($.keyboard.press('e')) $.flags.open = !$.flags.open;
+        if ($.keyboard.press('q')) $.flags.debug = !$.flags.debug;
 
+        this.camera.tick();
     }
 
     postRender(): void {
@@ -90,7 +91,7 @@ export class StowawayGame extends BaseGame<flags, values> {
     }
 
     applyValues() {
-        this.msPerDay = 60000 / $.values.speed;
+        // this.msPerDay = 60000 / $.values.speed;
     }
 
 }

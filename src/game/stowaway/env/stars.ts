@@ -37,8 +37,8 @@ export class Stars extends CVE {
         this.opacity = timeEaser($.time, [
             [3, 1],
             [6, 0],
-            [19, 0],
-            [22, 1],
+            [18, 0],
+            [20, 1],
         ], 24);
 
         this.checkRenderSize();

@@ -18,7 +18,7 @@ export class Mouse {
             this.release();
         });
         canvas.cvs.addEventListener('pointerdown', (e) => {
-            this.start();
+            this.start(e);
         });
         canvas.cvs.addEventListener('pointerup', (e) => {
             this.release();
@@ -34,7 +34,7 @@ export class Mouse {
         this.down = false;
         this.screenSpaceLast = undefined;
     }
-    private start() {
+    private start(e: PointerEvent) {
         this.down = true;
     }
     private move(e: PointerEvent) {

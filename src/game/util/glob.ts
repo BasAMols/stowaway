@@ -5,9 +5,10 @@ import { StowawayGame } from "../stowaway/game";
 import { Camera } from "./camera";
 import { Canvas } from "./canvas/canvas";
 import { Loader } from "./canvas/loader";
-import { TickerReturnData } from "./game/ticker";
+import { TickerReturnData } from "./ticker";
 import { Vector2 } from "./math/vector2";
 import { Mouse } from "./mouse";
+import { Keyboard } from "./keyboard";
 
 export interface DollarGlobal {
     tick: TickerReturnData;
@@ -23,6 +24,7 @@ export interface DollarGlobal {
     routeManager: RouteManager,
     camera: Camera,
     mouse: Mouse,
+    keyboard: Keyboard,
     flags: Record<string, boolean>,
     values: Record<string, number>,
 }
