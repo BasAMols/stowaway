@@ -28,6 +28,7 @@ export abstract class BaseGame<flags extends string, values extends string> exte
             loader: new Loader(),
             flags: this.flags,
             values: this.values,
+
         } as unknown as DollarGlobal;
 
         this.ticker = new Ticker();
@@ -35,6 +36,7 @@ export abstract class BaseGame<flags extends string, values extends string> exte
             $.tick = data;
             $.canvas.clear();
             $.day = $.tick.elapsedTime / this.msPerDay;
+            // $.day = 0.6;
             $.hour = $.day * 24;
             $.time = $.hour % 24;
             this.tick();

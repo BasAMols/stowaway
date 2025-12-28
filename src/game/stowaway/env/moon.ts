@@ -18,7 +18,7 @@ export class Moon extends CVE {
                     that.transform.setPosition(this.transform.position);
                     that.transform.setRotation(this.transform.rotation);
                     that.transform.setAnchor(this.transform.anchor);
-                    $.canvas.draw.circle(new Vector2(0, 0), 1200, Canvas.gradient.radial(new Vector2(0, 0), 1200, [[0.00, '#ffffff44'], [1, '#ffffff00']]));
+                    $.canvas.draw.circle(new Vector2(0, 0), 1200, Canvas.gradient.radial(new Vector2(0, 0), 1200, [[0.00, '#ffffff22'], [1, '#ffffff00']]));
                     that.opacity = timeEaser(($.day % 1) * 24, [
                         [6, 1],
                         [9, 0],

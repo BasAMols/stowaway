@@ -286,44 +286,44 @@ export function getPeople(): CharacterType[] {
                 new EatTask({ start: 23, end: 24, location: $.mapManager.getLocation("gunDeck04") }),
             ],
         },
-        {
-            name: "Jane",
-            tasks: [
-                new SleepTask({ start: 0, end: 7, location: $.mapManager.getLocation("orlopDeck07") }),
-                new EngineTask({ start: 10, end: 18, location: $.mapManager.getLocation("bridgeDeck02") }),
-                new ShowerTask({ start: 18, end: 19, location: $.mapManager.getLocation("bridgeDeckCabin00") }),
-                new EatTask({ start: 19, end: 21, location: $.mapManager.getLocation("gunDeck04") }),
-                new SleepTask({ start: 23, end: 24, location: $.mapManager.getLocation("orlopDeck07") }),
+        // {
+        //     name: "Jane",
+        //     tasks: [
+        //         new SleepTask({ start: 0, end: 7, location: $.mapManager.getLocation("orlopDeck07") }),
+        //         new EngineTask({ start: 10, end: 18, location: $.mapManager.getLocation("bridgeDeck02") }),
+        //         new ShowerTask({ start: 18, end: 19, location: $.mapManager.getLocation("bridgeDeckCabin00") }),
+        //         new EatTask({ start: 19, end: 21, location: $.mapManager.getLocation("gunDeck04") }),
+        //         new SleepTask({ start: 23, end: 24, location: $.mapManager.getLocation("orlopDeck07") }),
 
-            ],
-        },
-        {
-            name: "Andrew",
-            tasks: [
-                new EngineTask({ start: 0, end: 2, location: $.mapManager.getLocation("bridgeDeck02") }),
-                new SleepTask({ start: 2, end: 10, location: $.mapManager.getLocation("orlopDeck10") }),
-                new ShowerTask({ start: 10, end: 11, location: $.mapManager.getLocation("bridgeDeckCabin00") }),
-                new EatTask({ start: 12, end: 14, location: $.mapManager.getLocation("gunDeck03") }),
-                new EngineTask({ start: 18, end: 24, location: $.mapManager.getLocation("bridgeDeck02") }),
+        //     ],
+        // },
+        // {
+        //     name: "Andrew",
+        //     tasks: [
+        //         new EngineTask({ start: 0, end: 2, location: $.mapManager.getLocation("bridgeDeck02") }),
+        //         new SleepTask({ start: 2, end: 10, location: $.mapManager.getLocation("orlopDeck10") }),
+        //         new ShowerTask({ start: 10, end: 11, location: $.mapManager.getLocation("bridgeDeckCabin00") }),
+        //         new EatTask({ start: 12, end: 14, location: $.mapManager.getLocation("gunDeck03") }),
+        //         new EngineTask({ start: 18, end: 24, location: $.mapManager.getLocation("bridgeDeck02") }),
 
-            ],
-        },
-        {
-            name: "Tim",
-            tasks: [
-                new SleepTask({ start: 0, end: 6, location: $.mapManager.getLocation("orlopDeck15") }),
-                new EatTask({ start: 7, end: 9, location: $.mapManager.getLocation("gunDeck02") }),
-                new WorkTask({ start: 9, end: 10, location: $.mapManager.getLocation("mainDeck00") }),
-                new WorkTask({ start: 10, end: 11, location: $.mapManager.getLocation("mainDeck02") }),
-                new WorkTask({ start: 11, end: 12, location: $.mapManager.getLocation("mainDeck04") }),
-                new WorkTask({ start: 12, end: 13, location: $.mapManager.getLocation("mainDeck06") }),
-                new WorkTask({ start: 14, end: 15, location: $.mapManager.getLocation("mainDeck08") }),
-                new WorkTask({ start: 15, end: 16, location: $.mapManager.getLocation("gunDeck14") }),
-                new WorkTask({ start: 16, end: 17, location: $.mapManager.getLocation("gunDeck12") }),
-                new WorkTask({ start: 17, end: 18, location: $.mapManager.getLocation("gunDeck10") }),
-                new ShowerTask({ start: 21, end: 22, location: $.mapManager.getLocation("bridgeDeckCabin00") }),
-                new SleepTask({ start: 22, end: 24, location: $.mapManager.getLocation("orlopDeck15") }),
-            ],
-        },
+        //     ],
+        // },
+        // {
+        //     name: "Tim",
+        //     tasks: [
+        //         new SleepTask({ start: 0, end: 6, location: $.mapManager.getLocation("orlopDeck15") }),
+        //         new EatTask({ start: 7, end: 9, location: $.mapManager.getLocation("gunDeck02") }),
+        //         new WorkTask({ start: 9, end: 10, location: $.mapManager.getLocation("mainDeck00") }),
+        //         new WorkTask({ start: 10, end: 11, location: $.mapManager.getLocation("mainDeck02") }),
+        //         new WorkTask({ start: 11, end: 12, location: $.mapManager.getLocation("mainDeck04") }),
+        //         new WorkTask({ start: 12, end: 13, location: $.mapManager.getLocation("mainDeck06") }),
+        //         new WorkTask({ start: 14, end: 15, location: $.mapManager.getLocation("mainDeck08") }),
+        //         new WorkTask({ start: 15, end: 16, location: $.mapManager.getLocation("gunDeck14") }),
+        //         new WorkTask({ start: 16, end: 17, location: $.mapManager.getLocation("gunDeck12") }),
+        //         new WorkTask({ start: 17, end: 18, location: $.mapManager.getLocation("gunDeck10") }),
+        //         new ShowerTask({ start: 21, end: 22, location: $.mapManager.getLocation("bridgeDeckCabin00") }),
+        //         new SleepTask({ start: 22, end: 24, location: $.mapManager.getLocation("orlopDeck15") }),
+        //     ],
+        // },
     ];
 }

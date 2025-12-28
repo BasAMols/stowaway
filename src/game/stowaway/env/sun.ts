@@ -18,7 +18,7 @@ export class Sun extends CVE {
                     that.transform.setPosition(this.transform.position);
                     that.transform.setRotation(this.transform.rotation);
                     that.transform.setAnchor(this.transform.anchor);
-                    $.canvas.draw.circle(new Vector2(0, 0), 1800, Canvas.gradient.radial(new Vector2(0, 0), 1800, [[0.00, '#ffff0055'], [1, '#ffff0000']]));
+                    $.canvas.draw.circle(new Vector2(0, 0), 1800, Canvas.gradient.radial(new Vector2(0, 0), 1800, [[0.00, '#ffff0022'], [1, '#ffff0000']]));
                     that.opacity = timeEaser(($.day % 1) * 24, [
                         [4, 0],
                         [7, 1],

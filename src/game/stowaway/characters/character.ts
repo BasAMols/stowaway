@@ -4,6 +4,7 @@ import { Vector2 } from "src/game/util/math/vector2";
 import { TaskType, Task } from "./task";
 import { Schedule } from "./schedule";
 import { SubCanvas } from "src/game/util/canvas/subCanvas";
+import { BaseCanvas } from "src/game/util/canvas/baseCanvas";
 
 export class StaticSheet extends SubCanvas {
     constructor(size: Vector2, private grid: [number, number]) {
@@ -70,7 +71,7 @@ export class CharacterSprite {
         this.subCanvas.save();
 
         const column = this.value % this.grid[0];
-        const row = Math.floor(this.value / this.grid[1]);
+        const row = Math.floor(this.value / this.grid[0]);
 
         if (this.flip) {
             this.subCanvas.scale(new Vector2(-1, 1));
@@ -97,14 +98,42 @@ export interface CharacterType {
     name: string;
     tasks?: (TaskType | Task)[];
 }
+export class Animator {
+    timeRef: number = 0;
+    playing: boolean = true;
+    length: number;
+    duration: number;
+    constructor(private sprite: CharacterSprite, private min: number, private max: number, private fps: number) {
+        this.length = (this.max - this.min) + 1;
+        this.duration = this.length / this.fps * 1000;
+        this.timeRef = $.tick.elapsedTime;
+    }
+    getValue() {
+        return Math.floor(((($.tick.elapsedTime - this.timeRef) / this.duration) % 1) * this.length + this.min);
+    }
+    preRender() {
+        if (!this.playing) {
+            this.timeRef = $.tick.elapsedTime;
+        }
+        this.sprite.value = this.getValue();
+        // this.sprite.value = 7;
+        this.sprite.render();
+    }
+    render(canvas: BaseCanvas, position: Vector2, scale: number) {
+        canvas.draw.canvas(this.sprite.subCanvas, position, scale);
+    }
+    set flip(b: boolean) {
+        this.sprite.flip = b;
+    }
+}
 
 export class Character extends CVE {
     schedule: Schedule;
     activeTask: Task;
-    direction: Vector2;
     lastPosition: Vector2 = new Vector2(0, 0);
     speed: number = 700;
-    sprite: CharacterSprite;
+    sprites: Record<string, Animator> = {};
+    activeSprite: Animator;
 
     constructor(public data: CharacterType) {
         super();
@@ -112,7 +141,10 @@ export class Character extends CVE {
             tasks: data.tasks,
         });
         void $.loader.loadImage('dist/spa/images/ani/m/walk.png').then(image => {
-            this.sprite = new CharacterSprite(image, new Vector2(64, 135), [5, 4])
+            this.sprites.walk = new Animator(new CharacterSprite(image, new Vector2(64 * 3, 128 * 3), [4, 3]), 0, 10, 15)
+        });
+        void $.loader.loadImage('dist/spa/images/ani/m/idle.png').then(image => {
+            this.sprites.idle = new Animator(new CharacterSprite(image, new Vector2(64 * 3, 128 * 3), [5, 4]), 0, 18, 5)
         });
     }
 
@@ -122,25 +154,27 @@ export class Character extends CVE {
         this.activeTask = info.task;
         const lastPosition = this.lastPosition;
         if (lastPosition.subtract(info.position).magnitude() > 0) {
-            this.direction = info.position.subtract(lastPosition).normalise();
-            this.sprite.value = 0;
+            const direction = info.position.subtract(lastPosition).normalise();
+            // this.sprites.walk.playing = true;
+            // this.sprites.idle.playing = false;
+            this.sprites.walk.flip = direction.x < 0;
+            this.sprites.idle.flip = direction.x < 0;
+            this.sprites.walk.preRender();
+            this.activeSprite = this.sprites.walk;
         } else {
-            this.direction = undefined;
-            this.sprite.value = 6;
+            // this.sprites.idle.playing = true;
+            // this.sprites.walk.playing = false;
+            this.sprites.idle.preRender();
+            this.activeSprite = this.sprites.idle;
         }
 
         this.transform.setPosition(info.position);
         this.lastPosition = info.position;
         this.order = info.depth;
 
-        if (this.direction) {
-            this.sprite.flip = this.direction.x < 0;
-        }
-        this.sprite.render();
-
     }
     render() {
         // $.canvas.draw.rect(new Vector2(-10, -50), new Vector2(20, 50), '#fff');
-        $.canvas.draw.canvas(this.sprite.subCanvas, new Vector2(-15, -60), 0.55);
+        this.activeSprite.render($.canvas, new Vector2(-15, -60), 0.55 / 3);
     }
 }

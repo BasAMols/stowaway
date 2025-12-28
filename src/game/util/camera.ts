@@ -1,16 +1,17 @@
-import { CVE } from "../util/canvas/cve";
-import { Vector2 } from "../util/math/vector2";
+import { CVE } from "./canvas/cve";
+import { MathUtil } from "./math/math";
+import { Utils } from "./math/util";
+import { Vector2 } from "./math/vector2";
+import { Mouse } from "./mouse";
 
-export type CameraLayers = 'static' | 'sky' | 'horizon' | 'wave' | 'ship' | 'foreground'
 export class Camera {
-
+    mouse: Mouse;
     zoomLayers: Record<string, {
         parallax: number;
         element: CVE;
     }> = {};
 
     public focus: Vector2 = new Vector2(0, 0);
-    public zoom: number = 1;
 
     // Camera easing parameters
     public enableEasing: boolean = false; // Enable smooth camera movement with easing (false = direct focus value)
@@ -23,24 +24,189 @@ export class Camera {
     private _initialized: boolean = false;
 
     constructor() {
-        this.addZoomLayer('static', 0);
-        this.addZoomLayer('horizon', 0.1);
-        this.addZoomLayer('sky', 0.6);
-        this.addZoomLayer('wave', 0.9);
-        this.addZoomLayer('ship', 1);
-        this.addZoomLayer('foreground', 1.5);
+
+        this.mouse = new Mouse($.canvas, this);
+        this.mouse.addScrollListener((delta) => {
+            $.values.zoom = MathUtil.clamp($.values.zoom + delta * -0.0005, 1, 10);
+        });
+        this.mouse.addDragListener((delta) => {
+            this.focus = this.focus.add(delta.multiply(-1 / $.values.zoom));
+        });
     }
 
-    addZoomLayer(key: CameraLayers, parallax: number) {
+    addZoomLayer(key: string, parallax: number) {
         this.zoomLayers[key] = {
             parallax: parallax,
             element: new CVE(),
         }
-
     }
 
-    addToZoomLayer(key: CameraLayers, name: string, element: CVE, order: number = 1) {
+    addToZoomLayer(parallax: number, name: string, element: CVE, order: number = 1) {
+
+        const key = 'p' + parallax;
+        if (!this.zoomLayers[key]) {
+            this.addZoomLayer(key, parallax);
+        }
         element.add(name, this.zoomLayers[key].element, order);
+    }
+
+    calculateWorldSpace(screenSpace: Vector2, parallax: number = 1) {
+        const windowArea = $.container;
+        const worldArea = new Vector2(3840, 1350);
+        const gameArea = new Vector2(1920, 1350);
+
+        // Calculate base scale so that at zoom=1, the entire gameArea fits in windowArea
+        const baseScale = Math.min(windowArea.x / gameArea.x, windowArea.y / gameArea.y);
+
+        // Calculate the scale for parallax=1 (main action plane - 'ship' layer)
+        const parallaxOneScale = baseScale * $.values.zoom;
+
+        // Screen center point
+        const screenCenter = windowArea.divide(2);
+
+        // Get current smoothed focus (same calculation as in tick)
+        let currentFocus = this._smoothedPosition;
+        if (!this._initialized) {
+            currentFocus = this.focus;
+        }
+
+        // Convert focus from gameArea coordinates to worldArea coordinates
+        const gameAreaToWorldOffset = worldArea.subtract(gameArea).divide(2);
+        const focusInWorld = currentFocus.add(gameAreaToWorldOffset);
+
+        // Calculate the visible area in world coordinates based on current zoom
+        const visibleAreaInWorld = windowArea.divide(parallaxOneScale);
+
+        // Clamp the focus point so we never see outside worldArea
+        const minFocusX = visibleAreaInWorld.x / 2;
+        const maxFocusX = worldArea.x - visibleAreaInWorld.x / 2;
+        const minFocusY = visibleAreaInWorld.y / 2;
+        const maxFocusY = worldArea.y - visibleAreaInWorld.y / 2;
+
+        const clampedFocusInWorld = new Vector2(
+            Math.max(minFocusX, Math.min(maxFocusX, focusInWorld.x)),
+            Math.max(minFocusY, Math.min(maxFocusY, focusInWorld.y))
+        );
+
+        // Convert back to gameArea coordinates for positioning calculations
+        const clampedFocus = clampedFocusInWorld.subtract(gameAreaToWorldOffset);
+
+        // Handle static layers (parallax=0) - they don't transform
+        if (parallax === 0) {
+            // Static layers are drawn at window size, so screen space = world space
+            return screenSpace;
+        }
+
+        // For parallax=1, use the optimized formula
+        if (parallax === 1) {
+            // Reverse the transformation: screen space -> world space
+            // For parallax=1: screenPos = (worldPos - clampedFocus) * parallaxOneScale + screenCenter
+            // Therefore: worldPos = (screenPos - screenCenter) / parallaxOneScale + clampedFocus
+            const offsetFromScreenCenter = screenSpace.subtract(screenCenter);
+            const worldSpace = offsetFromScreenCenter.divide(parallaxOneScale).add(clampedFocus);
+            return worldSpace;
+        }
+
+        // For other parallax values, calculate layer-specific scale and position
+        // This matches the calculation in tick() for layers with the specified parallax
+        const layerScale = baseScale * (1 + ($.values.zoom - 1) * parallax);
+        const focusInScreenSpace = clampedFocus.multiply(parallaxOneScale);
+        const offsetToCenter = screenCenter.subtract(focusInScreenSpace);
+        const layerPosition = offsetToCenter.multiply(parallax);
+
+        // Reverse the transformation: screen space -> world space
+        // The forward transformation for a layer with parallax p:
+        // screenPos = worldPos * layerScale + layerPosition
+        // Therefore: worldPos = (screenPos - layerPosition) / layerScale
+        const worldSpace = screenSpace.subtract(layerPosition).divide(layerScale);
+
+        return worldSpace;
+    }
+
+    translateCoordinate(coordinate: Vector2, from: number, to: number): Vector2 {
+        // If both parallax values are the same, no transformation needed
+        if (from === to) {
+            return coordinate.clone();
+        }
+
+        const windowArea = $.container;
+        const worldArea = new Vector2(3840, 1350);
+        const gameArea = new Vector2(1920, 1350);
+
+        // Calculate base scale so that at zoom=1, the entire gameArea fits in windowArea
+        const baseScale = Math.min(windowArea.x / gameArea.x, windowArea.y / gameArea.y);
+
+        // Calculate the scale for parallax=1 (main action plane - 'ship' layer)
+        const parallaxOneScale = baseScale * $.values.zoom;
+
+        // Screen center point
+        const screenCenter = windowArea.divide(2);
+
+        // Get current smoothed focus (same calculation as in tick)
+        let currentFocus = this._smoothedPosition;
+        if (!this._initialized) {
+            currentFocus = this.focus;
+        }
+
+        // Convert focus from gameArea coordinates to worldArea coordinates
+        const gameAreaToWorldOffset = worldArea.subtract(gameArea).divide(2);
+        const focusInWorld = currentFocus.add(gameAreaToWorldOffset);
+
+        // Calculate the visible area in world coordinates based on current zoom
+        const visibleAreaInWorld = windowArea.divide(parallaxOneScale);
+
+        // Clamp the focus point so we never see outside worldArea
+        const minFocusX = visibleAreaInWorld.x / 2;
+        const maxFocusX = worldArea.x - visibleAreaInWorld.x / 2;
+        const minFocusY = visibleAreaInWorld.y / 2;
+        const maxFocusY = worldArea.y - visibleAreaInWorld.y / 2;
+
+        const clampedFocusInWorld = new Vector2(
+            Math.max(minFocusX, Math.min(maxFocusX, focusInWorld.x)),
+            Math.max(minFocusY, Math.min(maxFocusY, focusInWorld.y))
+        );
+
+        // Convert back to gameArea coordinates for positioning calculations
+        const clampedFocus = clampedFocusInWorld.subtract(gameAreaToWorldOffset);
+
+        // Helper function to get layer transform values for a given parallax
+        const getLayerTransform = (parallax: number) => {
+            if (parallax === 0) {
+                // Static layers don't transform
+                return { scale: 1, position: new Vector2(0, 0) };
+            }
+            const layerScale = baseScale * (1 + ($.values.zoom - 1) * parallax);
+            const focusInScreenSpace = clampedFocus.multiply(parallaxOneScale);
+            const offsetToCenter = screenCenter.subtract(focusInScreenSpace);
+            const layerPosition = offsetToCenter.multiply(parallax);
+            return { scale: layerScale, position: layerPosition };
+        };
+
+        // Step 1: Convert from 'from' parallax world space to screen space
+        const fromTransform = getLayerTransform(from);
+        let screenSpace: Vector2;
+
+        if (from === 0) {
+            // Static layer: world space = screen space
+            screenSpace = coordinate.clone();
+        } else {
+            // Forward transform: screenPos = worldPos * layerScale + layerPosition
+            screenSpace = coordinate.multiply(fromTransform.scale).add(fromTransform.position);
+        }
+
+        // Step 2: Convert from screen space to 'to' parallax world space
+        const toTransform = getLayerTransform(to);
+        let worldSpace: Vector2;
+
+        if (to === 0) {
+            // Static layer: screen space = world space
+            worldSpace = screenSpace.clone();
+        } else {
+            // Reverse transform: worldPos = (screenPos - layerPosition) / layerScale
+            worldSpace = screenSpace.subtract(toTransform.position).divide(toTransform.scale);
+        }
+
+        return worldSpace;
     }
 
     tick() {
@@ -72,7 +238,7 @@ export class Camera {
 
         // Calculate the scale for parallax=1 (main action plane)
         // This is what we use to transform the focus point
-        const parallaxOneScale = baseScale * this.zoom;
+        const parallaxOneScale = baseScale * $.values.zoom;
 
         // Calculate the visible area in world coordinates based on current zoom
         // This is how much of the world we can see at the current zoom level
@@ -108,7 +274,7 @@ export class Camera {
                 // Calculate scale: baseScale ensures gameArea fits at zoom=1
                 // Parallax affects how much the zoom affects this layer
                 // At parallax=1: scale = baseScale * zoom (full zoom effect)
-                const layerScale = baseScale * (1 + (this.zoom - 1) * layer.parallax);
+                const layerScale = baseScale * (1 + ($.values.zoom - 1) * layer.parallax);
 
                 // Calculate position: at parallax=1, focus point should be centered on screen
                 // The clamped focus is in gameArea coordinates (converted from worldArea after clamping)

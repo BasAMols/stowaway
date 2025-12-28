@@ -1,4 +1,5 @@
 import { Vector2 } from "../math/vector2";
+import { Mouse } from "../mouse";
 
 
 
@@ -88,6 +89,35 @@ export abstract class BaseCanvas {
         },
         canvas: (canvas: BaseCanvas, position: Vector2 = new Vector2(0, 0), scale: number = 0) => {
             this.ctx.drawImage(canvas.cvs, 0, 0, canvas.size.x, canvas.size.y, position.x, position.y, canvas.size.x * scale, canvas.size.y * scale);
+        }
+    }
+
+    mask = {
+        _start: (flip: boolean) => {
+            this.ctx.globalCompositeOperation = flip ? 'destination-in' : 'destination-out';
+            this.ctx.beginPath();
+        },
+        _end: () => {
+            this.ctx.closePath();
+            this.ctx.fill();
+            this.ctx.globalCompositeOperation = 'source-over';
+        },
+        polygon: (polygon: Vector2[], flip: boolean = false) => {
+            this.mask._start(flip);
+            this.ctx.moveTo(polygon[0].x, polygon[0].y);
+            for (const point of polygon) {
+                this.ctx.lineTo(point.x, point.y);
+            }
+        },
+        circle: (position: Vector2, radius: number, flip: boolean = false) => {
+            this.mask._start(flip);
+            this.ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI);
+            this.mask._end();
+        },
+        rect: (position: Vector2, size: Vector2, flip: boolean = false) => {
+            this.mask._start(flip);
+            this.ctx.rect(position.x, position.y, size.x, size.y);
+            this.mask._end();
         }
     }
 }

@@ -2,10 +2,12 @@ import { MapManager } from "../stowaway/characters/managers/mapManager";
 import { PeopleManager } from "../stowaway/characters/managers/peopleManager";
 import { RouteManager } from "../stowaway/characters/managers/routeManager";
 import { StowawayGame } from "../stowaway/game";
+import { Camera } from "./camera";
 import { Canvas } from "./canvas/canvas";
 import { Loader } from "./canvas/loader";
 import { TickerReturnData } from "./game/ticker";
 import { Vector2 } from "./math/vector2";
+import { Mouse } from "./mouse";
 
 export interface DollarGlobal {
     tick: TickerReturnData;
@@ -19,7 +21,8 @@ export interface DollarGlobal {
     mapManager: MapManager,
     peopleManager: PeopleManager,
     routeManager: RouteManager,
-
+    camera: Camera,
+    mouse: Mouse,
     flags: Record<string, boolean>,
     values: Record<string, number>,
 }

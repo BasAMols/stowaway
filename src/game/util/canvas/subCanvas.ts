@@ -7,4 +7,5 @@ export class SubCanvas extends BaseCanvas {
     constructor(size: Vector2) {
         super(document.createElement('canvas'), size);
     }
+
 }
