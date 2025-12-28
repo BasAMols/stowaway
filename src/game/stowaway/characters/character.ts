@@ -141,10 +141,10 @@ export class Character extends CVE {
             tasks: data.tasks,
         });
         void $.loader.loadImage('dist/spa/images/ani/m/walk.png').then(image => {
-            this.sprites.walk = new Animator(new CharacterSprite(image, new Vector2(64 * 3, 128 * 3), [4, 3]), 0, 10, 15)
+            this.sprites.walk = new Animator(new CharacterSprite(image, new Vector2(64, 128), [4, 3]), 0, 9, 10)
         });
         void $.loader.loadImage('dist/spa/images/ani/m/idle.png').then(image => {
-            this.sprites.idle = new Animator(new CharacterSprite(image, new Vector2(64 * 3, 128 * 3), [5, 4]), 0, 18, 5)
+            this.sprites.idle = new Animator(new CharacterSprite(image, new Vector2(64, 128), [5, 4]), 0, 18, 5)
         });
 
         $.camera.addToZoomLayer(1.01, 'character_' + this.data.name, this, 115);
@@ -177,6 +177,6 @@ export class Character extends CVE {
     }
     render() {
         // $.canvas.draw.rect(new Vector2(-10, -50), new Vector2(20, 50), '#fff');
-        this.activeSprite.render($.canvas, new Vector2(-15, -60), 0.55 / 3);
+        this.activeSprite.render($.canvas, new Vector2(-15, -60), 0.55);
     }
 }

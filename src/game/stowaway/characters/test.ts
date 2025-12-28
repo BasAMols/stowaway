@@ -23,6 +23,6 @@ export class Test extends CVE {
     }
 
     render() {
-        $.canvas.draw.circle(new Vector2(0, 0), 3, $.mouse.down ? '#f00' : '#fff');
+        // $.canvas.draw.circle(new Vector2(0, 0), 3, $.mouse.down ? '#f00' : '#fff');
     }
 }

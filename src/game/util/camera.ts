@@ -28,7 +28,7 @@ export class Camera {
 
         this.mouse = new Mouse($.canvas, this);
         this.mouse.addScrollListener((delta) => {
-            $.values.zoom = MathUtil.clamp($.values.zoom + delta * -0.0005, 1.6, 20);
+            $.values.zoom = MathUtil.clamp($.values.zoom + (delta * -0.0002 * $.values.zoom), 1.6, 40);
         });
         this.mouse.addDragListener((delta) => {
             this.focus = this.focus.add(delta.multiply(-1 / $.values.zoom / 0.9)).clamp(new Vector2(0, 0), new Vector2(3840, 1350));

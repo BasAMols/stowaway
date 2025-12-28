@@ -4,6 +4,7 @@ import { Vector2 } from "../../util/math/vector2";
 import { Utils } from "src/game/util/math/util";
 
 export class Wave extends CVE {
+    lastRender: number = 0;
     constructor(private y: number, private height: number, private frequency: number, private colorA: [number, number, number, number], private colorB: [number, number, number, number], private speed: number = 0.0005, opacity: number = 1) {
         super();
         this.transform.setPosition(new Vector2(-1920 / 2, this.y));
@@ -11,7 +12,10 @@ export class Wave extends CVE {
     }
 
     render() {
-        this.drawSine(3840, this.height, this.frequency, 1920, $.tick.elapsedTime * this.speed, this.colorA, this.colorB, 70);
+        if ($.tick.elapsedTime - this.lastRender > 200) {
+            this.lastRender = $.tick.elapsedTime;
+        }
+        this.drawSine(3840, this.height, this.frequency, 1920, this.lastRender * this.speed, this.colorA, this.colorB, 70);
     }
 
     drawSine(totalWidth: number, waveHeight: number, frequency: number, totalHeight: number, offset: number, colorA: [number, number, number, number], colorB: [number, number, number, number], resolution: number = 1) {
