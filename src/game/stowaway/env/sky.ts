@@ -2,20 +2,12 @@ import { CVE } from "../../util/canvas/cve";
 import { timeEaser } from "../../util/math/timeEaser";
 import { Utils } from "../../util/math/util";
 import { Vector2 } from "../../util/math/vector2";
-import { Moon } from "./moon";
 import { Stars } from "./stars";
-import { Sun } from "./sun";
 
 export class Sky extends CVE {
-    overlays: {
-        element: CVE;
-        order: number;
-        name: string;
-    }[] = [];
     constructor() {
         super();
-        new Stars().add('stars', this);
-
+        $.camera.addToZoomLayer(0, 'sky', this, 1);
     }
 
     render() {

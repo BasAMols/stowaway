@@ -146,6 +146,8 @@ export class Character extends CVE {
         void $.loader.loadImage('dist/spa/images/ani/m/idle.png').then(image => {
             this.sprites.idle = new Animator(new CharacterSprite(image, new Vector2(64 * 3, 128 * 3), [5, 4]), 0, 18, 5)
         });
+
+        $.camera.addToZoomLayer(1, 'character_' + this.data.name, this, 115);
     }
 
     preTransform() {

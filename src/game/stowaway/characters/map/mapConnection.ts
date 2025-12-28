@@ -23,6 +23,8 @@ export class MapConnection extends CVE {
             throw new Error("From and to cannot be the same");
         }
 
+        $.camera.addToZoomLayer(2, 'connection_' + this.data.from + '_' + this.data.to, this, 105);
+
     }
 
     build(): void {
@@ -52,7 +54,7 @@ export class MapConnection extends CVE {
     }
     render() {
         if ($.flags.debug) {
-            $.canvas.draw.line(this.fromLocation.data.position, this.toLocation.data.position, '#0f0');
+            $.canvas.draw.line($.camera.translateCoordinate(this.fromLocation.data.position, 1.10, 2), $.camera.translateCoordinate(this.toLocation.data.position, 1.10, 2), '#0f0');
         }
     }
 }

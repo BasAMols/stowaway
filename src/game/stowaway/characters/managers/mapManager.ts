@@ -20,7 +20,7 @@ export class MapManager {
     ) {
 
         for (const location of Object.entries(locations)) {
-            this.locations[location[0]] = new MapLocation({ name: location[0], position: location[1][0], depth: location[1][1] });
+            this.locations[location[0]] = new MapLocation({ name: location[0], position: location[1][0].add(new Vector2(250, -194)), depth: location[1][1] });
         }
 
         for (const connection of connections) {

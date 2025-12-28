@@ -5,31 +5,23 @@ import { timeEaser } from "src/game/util/math/timeEaser";
 import { Vector2 } from "src/game/util/math/vector2";
 
 export class Sun extends CVE {
-    overlay: {
-        element: CVE;
-        order: number;
-        name: string;
-    }[] = [];
     constructor() {
         super();
-        this.overlay.push({
-            element: new CQuick({
-                onRender: (that) => {
-                    that.transform.setPosition(this.transform.position);
-                    that.transform.setRotation(this.transform.rotation);
-                    that.transform.setAnchor(this.transform.anchor);
-                    $.canvas.draw.circle(new Vector2(0, 0), 1800, Canvas.gradient.radial(new Vector2(0, 0), 1800, [[0.00, '#ffff0022'], [1, '#ffff0000']]));
-                    that.opacity = timeEaser(($.day % 1) * 24, [
-                        [4, 0],
-                        [7, 1],
-                        [18, 1],
-                        [19, 0],
-                    ], 24);
-                }
-            }),
-            order: 150,
-            name: 'sunOverlay'
-        });
+        $.camera.addToZoomLayer(0, 'sun', this, 2);
+        $.camera.addToZoomLayer(1.5, 'sunOverlay', new CQuick({
+            onRender: (that) => {
+                that.transform.setPosition(this.transform.position);
+                that.transform.setRotation(this.transform.rotation);
+                that.transform.setAnchor(this.transform.anchor);
+                $.canvas.draw.circle(new Vector2(0, 0), 1800, Canvas.gradient.radial(new Vector2(0, 0), 1800, [[0.00, '#ffff0022'], [1, '#ffff0000']]));
+                that.opacity = timeEaser(($.day % 1) * 24, [
+                    [4, 0],
+                    [7, 1],
+                    [18, 1],
+                    [19, 0],
+                ], 24);
+            }
+        }), 151);
     }
 
     render() {

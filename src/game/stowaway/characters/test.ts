@@ -10,6 +10,8 @@ export class Test extends CVE {
 
     constructor() {
         super();
+        $.camera.addToZoomLayer(1.5, 'test', this, 100);
+
     }
 
     preTransform(): void {

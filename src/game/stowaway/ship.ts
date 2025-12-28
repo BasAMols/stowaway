@@ -17,139 +17,89 @@ export class ShipPart extends CVE {
         size: Vector2;
         opacity: number;
     }
-    constructor(url: string) {
+    constructor(url: string, parallax: number, private foreground: boolean = false) {
         super();
 
-        this.subCanvas = new SubCanvas(new Vector2(3840 * .5, 2800 * .5));
+        this.subCanvas = new SubCanvas(new Vector2(3840, 2578));
 
-        void $.loader.loadImage('dist/spa/images/ship/animationDay/' + url).then((image) => {
-            this.themes.push({
-                timeData: [[8, 0], [11, 1], [14, 1], [17, 0]],
-                image: image,
-                opacity: 1,
-            });
-        });
-        void $.loader.loadImage('dist/spa/images/ship/animationSunSet/' + url).then((image) => {
-            this.themes.push({
-                timeData: [[14, 0], [17, 1], [20, 0]],
-                image: image,
-                opacity: 1,
-            });
-        });
-        void $.loader.loadImage('dist/spa/images/ship/animationNight/' + url).then((image) => {
+        $.camera.addToZoomLayer(parallax, 'ship', this, 10);
+
+        // void $.loader.loadImage('dist/spa/images/ship/animationDay/' + url).then((image) => {
+        //     this.themes.push({
+        //         timeData: [[8, 0], [11, 1], [14, 1], [17, 0]],
+        //         image: image,
+        //         opacity: 1,
+        //     });
+        // });
+        // void $.loader.loadImage('dist/spa/images/ship/animationSunSet/' + url).then((image) => {
+        //     this.themes.push({
+        //         timeData: [[14, 0], [17, 1], [20, 0]],
+        //         image: image,
+        //         opacity: 1,
+        //     });
+        // });
+        void $.loader.loadImage('dist/spa/images/ship/parallax/' + url).then((image) => {
             this.themes.push({
                 timeData: [[5, 1], [8, 0], [17, 0], [20, 1]],
                 image: image,
                 opacity: 1,
             });
+
+            this.renderFirst(this.themes[0]!);
         });
-        void $.loader.loadImage('dist/spa/images/ship/animationSunRise/' + url).then((image) => {
-            this.themes.push({
-                timeData: [[5, 0], [8, 1], [11, 0]],
-                image: image,
-                opacity: 1,
-            });
-        });
+        // void $.loader.loadImage('dist/spa/images/ship/animationSunRise/' + url).then((image) => {
+        //     this.themes.push({
+        //         timeData: [[5, 0], [8, 1], [11, 0]],
+        //         image: image,
+        //         opacity: 1,
+        //     });
+        // });
 
     }
     renderFirst(theme: typeof this.themes[number]) {
         this.subCanvas.ctx.globalCompositeOperation = 'source-over';
         this.subCanvas.ctx.globalAlpha = 1;
-        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(3840 * .5, 2800 * .5));
+        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(3840, 2578));
     }
     renderSecond(theme: typeof this.themes[number]) {
         this.subCanvas.ctx.globalCompositeOperation = 'source-atop';
         this.subCanvas.ctx.globalAlpha = theme.opacity;
-        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(3840 * .5, 2800 * .5));
+        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(3840, 2578));
     }
-    preRender() {
-
-        this.subCanvas.clear();
-        this.themes.forEach(theme => {
-            theme.opacity = timeEaser($.day % 1 * 24, theme.timeData, 24);
-        });
-
-        const sorted = this.themes.sort((a, b) => b.opacity - a.opacity);
-
-        if (sorted[0]!.opacity >= 1) {
-            this.renderFirst(sorted[0]!);
-        } else {
-            this.renderFirst(sorted[0]!);
-            this.renderSecond(sorted[1]!);
+    preTransform(): void {
+        if (this.foreground) {
+            this.opacity = $.flags.open ? 0 : 1;
         }
 
-        if (this.mask) {
-            this.subCanvas.mask.circle(this.mask.position, this.mask.size.x / 2);
-        }
+        this.transform.setAnchor(new Vector2(500, 1200));
+        this.transform.setScale(0.5);
+        // this.transform.setRotation(Math.sin($.tick.elapsedTime * 0.0006) * 0.2 * ($.flags.debug ? 0 : 1));
+        this.transform.setPosition(new Vector2(Math.sin($.tick.elapsedTime * 0.0003) * 10 * ($.flags.debug ? 0 : 0), -750));
     }
+    // preRender() {
+
+
+    //     this.subCanvas.clear();
+    //     // this.themes.forEach(theme => {
+    //     //     theme.opacity = timeEaser($.day % 1 * 24, theme.timeData, 24);
+    //     // });
+
+    //     const sorted = this.themes.sort((a, b) => b.opacity - a.opacity);
+
+    //     // if (sorted[0]!.opacity >= 1) {
+    //     //     this.renderFirst(sorted[0]!);
+    //     // } else {
+    //     //     this.renderFirst(sorted[0]!);
+    //     //     this.renderSecond(sorted[1]!);
+    //     // }
+
+    //     // if (this.mask) {
+    //     //     this.subCanvas.mask.circle(this.mask.position, this.mask.size.x / 2);
+    //     // }
+
+    //     this.renderFirst(sorted[0]!);
+    // }
     render() {
         $.canvas.draw.canvas(this.subCanvas, new Vector2(0, 0), 1);
-    }
-}
-export class Ship extends CVE {
-    shipImages: Record<string, HTMLImageElement> = {};
-    focus: Vector2
-    front: ShipPart;
-    mid: ShipPart;
-    back: ShipPart;
-    ext: ShipPart;
-    getTargetPosition(): Vector2 {
-        const transform = Transform2d.calculateWorldTransform([this.children.character_Dave.transform, this.transform]);
-        return transform.position.add(new Vector2(0, -30));
-    }
-    constructor() {
-        super();
-        this.transform.setAnchor(new Vector2(500, 1200));
-        this.transform.setPosition(new Vector2(0, 0));
-
-        this.front = new ShipPart('0003-min.png');
-        this.mid = new ShipPart('0002-min.png');
-        this.back = new ShipPart('0001-min.png');
-        this.ext = new ShipPart('0000-min.png');
-
-        // this.front.add('front', this, 40);
-        this.mid.add('mid', this, 20);
-        this.back.add('back', this, 5);
-        this.ext.add('ext', this, 1);
-
-        Object.entries($.mapManager.locations).forEach(([key, location]) => {
-            location.add('location_' + key, this, 100);
-        });
-
-        $.mapManager.mapConnections.forEach(connection => {
-            connection.add('connection_' + connection.data.from + '_' + connection.data.to, this, 100);
-        });
-
-        $.peopleManager.people.forEach(person => {
-            person.add('character_' + person.data.name, this, 115);
-        });
-
-
-
-    }
-
-    preRender() {
-        this.ext.opacity = 0;
-
-        // if (this.focus) {
-        //     (this.front as ShipPart).mask = {
-        //         position: this.focus.subtract(new Vector2(0, -200)),
-        //         size: new Vector2(100, 100),
-        //         opacity: 0,
-        //     };
-        // } else {
-        //     (this.front as ShipPart).mask = undefined;
-        // }
-
-        this.front.opacity = $.flags.open ? 0 : 1;
-    }
-
-    render() {
-        this.transform.setRotation(Math.sin($.tick.elapsedTime * 0.0006) * 0.2 * ($.flags.debug ? 0 : 1));
-        this.transform.setPosition(new Vector2(Math.sin($.tick.elapsedTime * 0.0003) * 10 * ($.flags.debug ? 0 : 1), -200));
-
-        this.front.transform.setRotation(Math.sin($.tick.elapsedTime * 0.0006) * 0.2 * ($.flags.debug ? 0 : 1));
-        this.front.transform.setPosition(new Vector2(Math.sin($.tick.elapsedTime * 0.0003) * 10 * ($.flags.debug ? 0 : 1), -200));
-
     }
 }

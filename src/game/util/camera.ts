@@ -5,6 +5,9 @@ import { Vector2 } from "./math/vector2";
 import { Mouse } from "./mouse";
 
 export class Camera {
+    transformPosition(position: Vector2, arg1: number, arg2: number): Vector2 {
+        throw new Error("Method not implemented.");
+    }
     mouse: Mouse;
     zoomLayers: Record<string, {
         parallax: number;
@@ -30,7 +33,7 @@ export class Camera {
             $.values.zoom = MathUtil.clamp($.values.zoom + delta * -0.0005, 1, 10);
         });
         this.mouse.addDragListener((delta) => {
-            this.focus = this.focus.add(delta.multiply(-1 / $.values.zoom));
+            this.focus = this.focus.add(delta.multiply(-1 / $.values.zoom)).clamp(new Vector2(0, 0), new Vector2(3840, 1350));
         });
     }
 

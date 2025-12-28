@@ -5,31 +5,25 @@ import { timeEaser } from "src/game/util/math/timeEaser";
 import { Vector2 } from "src/game/util/math/vector2";
 
 export class Moon extends CVE {
-    overlay: {
-        element: CVE;
-        order: number;
-        name: string;
-    }[] = [];
     constructor() {
         super();
-        this.overlay.push({
-            element: new CQuick({
-                onRender: (that) => {
-                    that.transform.setPosition(this.transform.position);
-                    that.transform.setRotation(this.transform.rotation);
-                    that.transform.setAnchor(this.transform.anchor);
-                    $.canvas.draw.circle(new Vector2(0, 0), 1200, Canvas.gradient.radial(new Vector2(0, 0), 1200, [[0.00, '#ffffff22'], [1, '#ffffff00']]));
-                    that.opacity = timeEaser(($.day % 1) * 24, [
-                        [6, 1],
-                        [9, 0],
-                        [17, 0],
-                        [19, 1],
-                    ], 24);
-                }
-            }),
-            order: 150,
-            name: 'moonOverlay'
-        });
+
+        $.camera.addToZoomLayer(0, 'moon', this, 3);
+        $.camera.addToZoomLayer(1.5, 'moonOverlay', new CQuick({
+            onRender: (that) => {
+                that.transform.setPosition(this.transform.position);
+                that.transform.setRotation(this.transform.rotation);
+                that.transform.setAnchor(this.transform.anchor);
+                $.canvas.draw.circle(new Vector2(0, 0), 1200, Canvas.gradient.radial(new Vector2(0, 0), 1200, [[0.00, '#ffffff22'], [1, '#ffffff00']]));
+                that.opacity = timeEaser(($.day % 1) * 24, [
+                    [6, 1],
+                    [9, 0],
+                    [17, 0],
+                    [19, 1],
+                ], 24);
+            }
+        }), 151);
+
     }
 
     render() {

@@ -8,6 +8,7 @@ export class Stars extends CVE {
     renderedSize: Vector2 = new Vector2(0, 0);
     constructor() {
         super();
+        $.camera.addToZoomLayer(0, 'stars', this, 2);
     }
 
     addStars(position: Vector2, size: Vector2) {

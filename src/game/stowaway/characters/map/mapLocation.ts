@@ -18,6 +18,8 @@ export class MapLocation extends CVE {
     public constructor(public data: MapLocationType) {
         super();
         this.data.depth = this.data.depth ?? 0;
+        $.camera.addToZoomLayer(2, 'location_' + this.data.name, this, 100);
+
     }
     registerConnection(connection: MapConnection, a: MapLocation, b: MapLocation): void {
         this.connections.push(connection);
@@ -30,7 +32,7 @@ export class MapLocation extends CVE {
     }
     render() {
         if ($.flags.debug) {
-            $.canvas.draw.circle(this.data.position, 3, '#f00');
+            $.canvas.draw.circle($.camera.translateCoordinate(this.data.position, 1.10, 2), 3, '#f00');
         }
     }
 
