@@ -26,6 +26,9 @@ export class Camera {
     private _velocity: Vector2 = new Vector2(0, 0);
     private _initialized: boolean = false;
 
+    static worldArea: Vector2 = new Vector2(3840, 1350);
+    static gameArea: Vector2 = new Vector2(1920, 1350);
+
     constructor() {
 
         this.mouse = new Mouse($.canvas, this);
@@ -133,11 +136,9 @@ export class Camera {
         }
 
         const windowArea = $.container;
-        const worldArea = new Vector2(3840, 1350);
-        const gameArea = new Vector2(1920, 1350);
 
         // Calculate base scale so that at zoom=1, the entire gameArea fits in windowArea
-        const baseScale = Math.min(windowArea.x / gameArea.x, windowArea.y / gameArea.y);
+        const baseScale = Math.min(windowArea.x / Camera.gameArea.x, windowArea.y / Camera.gameArea.y);
 
         // Calculate the scale for parallax=1 (main action plane - 'ship' layer)
         const parallaxOneScale = baseScale * $.values.zoom;
@@ -152,7 +153,7 @@ export class Camera {
         }
 
         // Convert focus from gameArea coordinates to worldArea coordinates
-        const gameAreaToWorldOffset = worldArea.subtract(gameArea).divide(2);
+        const gameAreaToWorldOffset = Camera.worldArea.subtract(Camera.gameArea).divide(2);
         const focusInWorld = currentFocus.add(gameAreaToWorldOffset);
 
         // Calculate the visible area in world coordinates based on current zoom
@@ -160,9 +161,9 @@ export class Camera {
 
         // Clamp the focus point so we never see outside worldArea
         const minFocusX = visibleAreaInWorld.x / 2;
-        const maxFocusX = worldArea.x - visibleAreaInWorld.x / 2;
+        const maxFocusX = Camera.worldArea.x - visibleAreaInWorld.x / 2;
         const minFocusY = visibleAreaInWorld.y / 2;
-        const maxFocusY = worldArea.y - visibleAreaInWorld.y / 2;
+        const maxFocusY = Camera.worldArea.y - visibleAreaInWorld.y / 2;
 
         const clampedFocusInWorld = new Vector2(
             Math.max(minFocusX, Math.min(maxFocusX, focusInWorld.x)),
@@ -230,12 +231,9 @@ export class Camera {
         }
 
         const windowArea = $.container;
-        const worldArea = new Vector2(3840, 1350);
-        const worldCenter = worldArea.divide(2);
-        const gameArea = new Vector2(1920, 1350);
 
         // Calculate base scale so that at zoom=1, the entire gameArea fits in windowArea
-        const baseScale = Math.min(windowArea.x / gameArea.x, windowArea.y / gameArea.y);
+        const baseScale = Math.min(windowArea.x / Camera.gameArea.x, windowArea.y / Camera.gameArea.y);
 
         // Screen center point
         const screenCenter = windowArea.divide(2);
@@ -250,15 +248,15 @@ export class Camera {
 
         // Convert smoothed position from gameArea coordinates to worldArea coordinates
         // gameArea is centered in worldArea, so offset is half the difference
-        const gameAreaToWorldOffset = worldArea.subtract(gameArea).divide(2);
+        const gameAreaToWorldOffset = Camera.worldArea.subtract(Camera.gameArea).divide(2);
         const focusInWorld = this._smoothedPosition.add(gameAreaToWorldOffset);
 
         // Clamp the focus point so we never see outside worldArea
         // We need to ensure the visible area (centered on focus) stays within worldArea bounds
         const minFocusX = visibleAreaInWorld.x / 2;
-        const maxFocusX = worldArea.x - visibleAreaInWorld.x / 2;
+        const maxFocusX = Camera.worldArea.x - visibleAreaInWorld.x / 2;
         const minFocusY = visibleAreaInWorld.y / 2;
-        const maxFocusY = worldArea.y - visibleAreaInWorld.y / 2;
+        const maxFocusY = Camera.worldArea.y - visibleAreaInWorld.y / 2;
 
         const clampedFocusInWorld = new Vector2(
             Math.max(minFocusX, Math.min(maxFocusX, focusInWorld.x)),

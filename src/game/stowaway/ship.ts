@@ -82,13 +82,13 @@ export class ShipPart extends CVE {
         this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(1920 * ShipPart.shipScale, 1289 * ShipPart.shipScale));
         this.subCanvas.restore();
     }
-    lastRender: boolean;
 
     preTransform(): void {
         if (this.foreground) {
-            this.lastRender = false;
             this.renderFirst(this.themes[0]!);
-            $.areaManager.mask(this.subCanvas, new Vector2(-this.roi.x * ShipPart.shipScale, -this.roi.y * ShipPart.shipScale));
+            if ($.flags.open) {
+                $.areaManager.mask(this.subCanvas, new Vector2(-this.roi.x * ShipPart.shipScale, -this.roi.y * ShipPart.shipScale));
+            }
         }
 
         this.transform.setScale(1 / ShipPart.shipScale);
