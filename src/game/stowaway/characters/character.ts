@@ -140,14 +140,18 @@ export class Character extends CVE {
         this.schedule = new Schedule(this, {
             tasks: data.tasks,
         });
-        void $.loader.loadImage('dist/spa/images/ani/m/walk.png').then(image => {
-            this.sprites.walk = new Animator(new CharacterSprite(image, new Vector2(64, 128), [4, 3]), 0, 9, 10)
-        });
-        void $.loader.loadImage('dist/spa/images/ani/m/idle.png').then(image => {
-            this.sprites.idle = new Animator(new CharacterSprite(image, new Vector2(64, 128), [5, 4]), 0, 18, 5)
-        });
+
+        this.load({ key: 'walk', grid: [4, 3], to: 9, fps: 5 });
+        this.load({ key: 'idle', grid: [5, 4], to: 18, fps: 5 });
+        this.load({ key: 'sit', grid: [4, 4], to: 12, fps: 5 });
 
         $.camera.addToZoomLayer(1.01, 'character_' + this.data.name, this, 115);
+    }
+
+    load({ key, grid, to, fps = 5, from = 0, imageurl = key }: { imageurl?: string; key: string; grid: [number, number]; from?: number; to: number; fps?: number; }) {
+        void $.loader.loadImage(`dist/spa/images/ani/m/${imageurl}.png`).then(image => {
+            this.sprites[key] = new Animator(new CharacterSprite(image, new Vector2(64, 128), grid), from, to, fps)
+        });
     }
 
     preTransform() {

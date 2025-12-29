@@ -15,6 +15,8 @@ import { Test } from "./characters/test";
 import { Transform2d } from "../util/math/transform";
 import { ShipPart } from "./ship";
 import { Stars } from "./env/stars";
+import { PC } from "./characters/pc";
+import { StaticCharacter } from "./characters/staticCharacter";
 
 export type flags = 'open' | 'debug';
 export type values = 'speed' | 'zoom';
@@ -45,9 +47,15 @@ export class StowawayGame extends BaseGame<flags, values> {
         new Sun();
         new Moon();
         new Test();
+        // new PC();
+        new StaticCharacter(new Vector2(472, 934), 'sit1', 1.01, 'sit', false);
+        new StaticCharacter(new Vector2(472 + 27, 934), 'sit2', 1.01, 'sit', true);
+        new StaticCharacter(new Vector2(472 + 26, 934 - 2), 'sit3', 1.00, 'sit', true);
+        new StaticCharacter(new Vector2(472 + 40, 934 - 7), 'idle', 0.99, 'idle', true);
+        new StaticCharacter(new Vector2(472 - 55, 934 + 16), 'idle2', 1.03, 'sit', false);
 
         for (let i = 0; i < 15; i++) {
-            new ShipPart(i.toString().padStart(4, '0') + '.png', 0.94 + i * 0.01, (0.94 + i * 0.01) > 1.02);
+            new ShipPart(i.toString().padStart(4, '0') + '.png', 0.94 + i * 0.01, (0.94 + i * 0.01) > 1.029);
         }
 
         for (let i = 0; i < 20; i++) {
@@ -59,6 +67,7 @@ export class StowawayGame extends BaseGame<flags, values> {
                 this.camera.addToZoomLayer(offset, key, new Wave(770 + offset * 10 * 25, 4 * offset, 1 + 3 * offset, [28 * colorOffset, 42 * colorOffset, 58 * colorOffset, 1], [90 * colorOffset, 130 * colorOffset, 180 * colorOffset, 1], 0.0005), 6);
             })('wave' + (i + 1), i * 0.1)
         }
+
 
         Object.entries(this.camera.zoomLayers).forEach(([key, layer]) => {
             layer.element.add(key, this, layer.parallax + 1);

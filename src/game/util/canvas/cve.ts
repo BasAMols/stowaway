@@ -46,6 +46,10 @@ export class CVE {
         return this;
     }
 
+    loaded() {
+        Object.values(this.children).forEach(child => child.loaded());
+    }
+
     preTransform() {
         // void
     }

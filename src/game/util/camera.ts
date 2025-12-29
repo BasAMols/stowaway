@@ -19,6 +19,8 @@ export class Camera {
     public speed: number = 6000; // Units per second - controls overall responsiveness
     public snapThreshold: number = 10; // Distance threshold for snapping to target (0 = disabled)
 
+    public sway: number = 1;
+
     // Internal smoothed position and velocity
     private _smoothedPosition: Vector2 = new Vector2(0, 0);
     private _velocity: Vector2 = new Vector2(0, 0);
@@ -222,7 +224,8 @@ export class Camera {
             this._updateSmoothedPosition();
         } else {
             // Use focus directly when easing is disabled
-            this._smoothedPosition = this.focus.clone();
+            const swayAmount = this.sway * ($.flags.debug ? 0 : 1)
+            this._smoothedPosition = this.focus.clone().add(new Vector2(Math.sin($.tick.elapsedTime * 0.0003) * swayAmount * 2 - swayAmount, Math.sin($.tick.elapsedTime * 0.0001) * swayAmount * 2 - swayAmount));
             this._velocity = new Vector2(0, 0);
         }
 

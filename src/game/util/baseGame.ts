@@ -58,6 +58,7 @@ export abstract class BaseGame<flags extends string, values extends string> exte
     start() {
         $.loader.setup = true;
         if ($.loader.ready) {
+            this.loaded();
             this.ticker.start();
         } else {
             setTimeout(() => {
