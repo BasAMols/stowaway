@@ -105,9 +105,13 @@ export abstract class BaseCanvas {
         polygon: (polygon: Vector2[], flip: boolean = false) => {
             this.mask._start(flip);
             this.ctx.moveTo(polygon[0].x, polygon[0].y);
-            for (const point of polygon) {
-                this.ctx.lineTo(point.x, point.y);
-            }
+            polygon.forEach((point, index) => {
+                if (index > 0) {
+                    this.ctx.lineTo(point.x, point.y);
+                }
+            });
+            this.mask._end();
+
         },
         circle: (position: Vector2, radius: number, flip: boolean = false) => {
             this.mask._start(flip);

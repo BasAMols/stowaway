@@ -3,40 +3,27 @@ import { BaseCharacter } from "./baseCharacter";
 import { Animator } from "./character";
 import { CVE } from "src/game/util/canvas/cve";
 import { Canvas } from "src/game/util/canvas/canvas";
+import { ShipPart } from "../ship";
+import { Utils } from "src/game/util/math/util";
 
 
-export class WalkManager {
-    constructor() {
-
-    }
-    target(position: Vector2): Vector2 {
-        const target = Object.values($.mapManager.locations)
-            .filter(location => location.data.position.y > position.y)
-
-            .sort((a, b) => a.data.position.subtract(position).magnitude() - b.data.position.subtract(position).magnitude())[0].data.position.clone();
-        target.x = position.x
-        return target;
-    }
-}
 
 export class PC extends BaseCharacter {
     speed: number = 0.05;
     targetPosition: Vector2;
-    walkManager: WalkManager;
     running: boolean = false;
     target: Target;
 
     constructor() {
         super();
 
-        $.camera.addToZoomLayer(1.02, 'pc', this, 115);
-        $.camera.addToZoomLayer(1.02, 'target', (this.target = new Target()), 114);
+        $.camera.addToZoomLayer(1.028, 'pc', this, 115);
+        $.camera.addToZoomLayer(1.028, 'target', (this.target = new Target()), 114);
 
         this.transform.setPosition(new Vector2(602, 934));
-        this.walkManager = new WalkManager();
 
         $.mouse.registerClickListener((position) => {
-            this.targetPosition = this.walkManager.target(position);
+            this.targetPosition = $.areaManager.target(position);
             this.target.target = this.targetPosition;
             this.target.visible = true;
             if ($.keyboard.pressed('shift')) {
@@ -98,6 +85,7 @@ export class Target extends CVE {
     visible: boolean = false;
 
     render() {
+        return
         if (!this.target || !this.visible) return;
 
         $.canvas.save();

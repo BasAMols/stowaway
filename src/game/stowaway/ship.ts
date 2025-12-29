@@ -17,12 +17,13 @@ export class ShipPart extends CVE {
         size: Vector2;
         opacity: number;
     }
-    shipScale: number = 2;
+    static offset: Vector2 = new Vector2(250, -150);
+    static shipScale: number = 2;
 
-    constructor(url: string, parallax: number, private foreground: boolean = false) {
+    constructor(url: string, parallax: number, private foreground: boolean = false, private roi: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 1920, height: 1289 }) {
         super();
 
-        this.subCanvas = new SubCanvas(new Vector2(1920 * this.shipScale, 1289 * this.shipScale));
+        this.subCanvas = new SubCanvas(new Vector2(this.roi.width * ShipPart.shipScale, this.roi.height * ShipPart.shipScale));
 
         $.camera.addToZoomLayer(parallax, 'ship', this, 10);
 
@@ -68,52 +69,32 @@ export class ShipPart extends CVE {
 
     }
     renderFirst(theme: typeof this.themes[number]) {
+        this.subCanvas.save();
         this.subCanvas.ctx.globalCompositeOperation = 'source-over';
         this.subCanvas.ctx.globalAlpha = 1;
-        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(1920 * this.shipScale, 1289 * this.shipScale));
+        this.subCanvas.draw.image(theme.image, new Vector2(-this.roi.x * ShipPart.shipScale, -this.roi.y * ShipPart.shipScale), new Vector2(1920 * ShipPart.shipScale, 1289 * ShipPart.shipScale));
+        this.subCanvas.restore();
     }
     renderSecond(theme: typeof this.themes[number]) {
+        this.subCanvas.save();
         this.subCanvas.ctx.globalCompositeOperation = 'source-atop';
         this.subCanvas.ctx.globalAlpha = theme.opacity;
-        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(1920 * this.shipScale, 1289 * this.shipScale));
+        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(1920 * ShipPart.shipScale, 1289 * ShipPart.shipScale));
+        this.subCanvas.restore();
     }
+    lastRender: boolean;
+
     preTransform(): void {
         if (this.foreground) {
-            this.opacity = $.flags.open ? 0 : 1;
+            this.lastRender = false;
+            this.renderFirst(this.themes[0]!);
+            $.areaManager.mask(this.subCanvas, new Vector2(-this.roi.x * ShipPart.shipScale, -this.roi.y * ShipPart.shipScale));
         }
 
-        this.transform.setAnchor(new Vector2(500, 1200));
-        this.transform.setScale(1 / this.shipScale);
-        // this.transform.setRotation(Math.sin($.tick.elapsedTime * 0.0006) * 0.2 * ($.flags.debug ? 0 : 1));
-        this.transform.setPosition(new Vector2(Math.sin($.tick.elapsedTime * 0.0003) * 10 * ($.flags.debug ? 0 : 0), -750));
-    }
-    preRender() {
-        return
-        if ($.flags.open && this.foreground) {
-            return
-        }
-
-        this.subCanvas.clear();
-        this.themes.forEach(theme => {
-            theme.opacity = timeEaser($.day % 1 * 24, theme.timeData, 24);
-        });
-
-        const sorted = this.themes.sort((a, b) => b.opacity - a.opacity);
-
-        this.renderFirst(sorted[0]!);
-        // if (sorted[0]!.opacity >= 1) {
-        // } else {
-        //     this.renderFirst(sorted[0]!);
-        //     this.renderSecond(sorted[1]!);
-        // }
-
-        // if (this.mask) {
-        //     this.subCanvas.mask.circle(this.mask.position, this.mask.size.x / 2);
-        // }
-
-        // this.renderFirst(sorted[0]!);
+        this.transform.setScale(1 / ShipPart.shipScale);
+        this.transform.setPosition(ShipPart.offset);
     }
     render() {
-        $.canvas.draw.canvas(this.subCanvas, new Vector2(0, 0), 1);
+        $.canvas.draw.canvas(this.subCanvas, new Vector2(this.roi.x * ShipPart.shipScale, this.roi.y * ShipPart.shipScale), 1);
     }
 }

@@ -10,6 +10,7 @@ import { PeopleManager } from "src/game/stowaway/characters/managers/peopleManag
 import { RouteManager } from "src/game/stowaway/characters/managers/routeManager";
 import { DollarGlobal } from "./glob";
 import { Keyboard } from "./keyboard";
+import { AreaManager } from "../stowaway/characters/map/areaManager";
 
 
 export abstract class BaseGame<flags extends string, values extends string> extends CVE {
@@ -31,6 +32,7 @@ export abstract class BaseGame<flags extends string, values extends string> exte
             loader: new Loader(),
             flags: this.flags,
             values: this.values,
+            areaManager: new AreaManager(),
 
         } as unknown as DollarGlobal;
 
@@ -69,6 +71,7 @@ export abstract class BaseGame<flags extends string, values extends string> exte
 
     tick() {
         $.keyboard.tick();
+        $.mouse.tick();
         super.tick();
     }
 

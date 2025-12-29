@@ -16,6 +16,7 @@ export class Mouse {
         noDouble: boolean;
         delta: number;
         position: Vector2;
+        screenSpace: Vector2;
     }
     constructor(canvas: Canvas, private camera: Camera) {
         canvas.cvs.addEventListener('pointermove', (e: PointerEvent) => {
@@ -31,7 +32,7 @@ export class Mouse {
         });
         canvas.cvs.addEventListener('pointerup', (e) => {
             this.down = false;
-            if (this.downTime < 200) {
+            if (!this.click || this.downTime < 100) {
                 this._click();
             }
             this.screenSpaceLast = undefined;
@@ -58,6 +59,7 @@ export class Mouse {
                 noDouble: false,
                 delta: 0,
                 position: this.worldSpace,
+                screenSpace: this.screenSpace,
             };
             this.clickListeners.forEach(listener => listener(this.worldSpace));
         }

@@ -17,12 +17,15 @@ import { ShipPart } from "./ship";
 import { Stars } from "./env/stars";
 import { PC } from "./characters/pc";
 import { StaticCharacter } from "./characters/staticCharacter";
+import { CQuick } from "../util/canvas/cr";
 
 export type flags = 'open' | 'debug';
 export type values = 'speed' | 'zoom';
 export class StowawayGame extends BaseGame<flags, values> {
     msPerDay: number = Infinity;
     camera: Camera;
+    parts: ShipPart[] = [];
+    pc: PC;
 
     constructor(canvas: HTMLCanvasElement) {
         super(canvas, { open: true, debug: false }, { speed: 1, zoom: 4 });
@@ -47,23 +50,32 @@ export class StowawayGame extends BaseGame<flags, values> {
         // new Sun();
         new Moon();
         // new Test();
-        new PC();
         new StaticCharacter(new Vector2(472, 934), 'sit1', 1.01, 'sitTalk', false);
         new StaticCharacter(new Vector2(472 + 27, 934), 'sit2', 1.01, 'sitNod', true);
         new StaticCharacter(new Vector2(472 + 26, 934 - 2), 'sit3', 1.00, 'sit', true);
         new StaticCharacter(new Vector2(472 + 40, 934 - 7), 'idle', 0.99, 'idle', true);
-        new StaticCharacter(new Vector2(472 - 55, 934 + 16), 'idle2', 1.03, 'sit', false);
 
         for (let i = 0; i < 15; i++) {
-            new ShipPart(i.toString().padStart(4, '0') + '.png', 0.94 + i * 0.01, (0.94 + i * 0.01) > 1.029);
+            new ShipPart(
+                i.toString().padStart(4, '0') + '.png', 0.94 + i * 0.01,
+                (0.94 + i * 0.01) > 1.03,
+                { x: 0, y: 800, width: 1920, height: 1289 - 800 }
+            )
+            new ShipPart(
+                i.toString().padStart(4, '0') + '.png', 0.94 + i * 0.01 + 0.0001,
+                false,
+                { x: 0, y: 0, width: 1920, height: 800 }
+            );
         }
+
+        this.pc = new PC();
 
         for (let i = 0; i < 20; i++) {
             // if (i > 9 && i < 11) {
             //     continue;
             // }
             ((key: string, offset: number) => {
-                const colorOffset = offset * 0.2 + 0.3;
+                const colorOffset = offset * 0.4 + 0.3;
                 this.camera.addToZoomLayer(offset, key, new Wave(770 + offset * 10 * 25, 4 * offset, 1 + 3 * offset, [28 * colorOffset, 42 * colorOffset, 58 * colorOffset, 1], [90 * colorOffset, 130 * colorOffset, 180 * colorOffset, 1], 0.0005), 6);
             })('wave' + (i + 1), i * 0.1 - 0.02)
         }
@@ -79,7 +91,9 @@ export class StowawayGame extends BaseGame<flags, values> {
         this.camera.focus = new Vector2(500, 900);
     }
 
-
+    tick() {
+        super.tick();
+    }
 
     getTargetPosition(): Vector2 {
         const transform = Transform2d.calculateWorldTransform([$.peopleManager.people.find(person => person.data.name === 'Dave')!.transform, this.transform]);
@@ -89,8 +103,9 @@ export class StowawayGame extends BaseGame<flags, values> {
     preTransform(): void {
         if ($.keyboard.press('e')) $.flags.open = !$.flags.open;
         if ($.keyboard.press('q')) $.flags.debug = !$.flags.debug;
-
         this.camera.tick();
+        $.areaManager.focus = this.pc.transform.position ?? new Vector2(0, 0);
+        $.areaManager.tick();
     }
 
     postRender(): void {

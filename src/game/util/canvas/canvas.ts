@@ -17,4 +17,5 @@ export class Canvas extends BaseCanvas {
         $.container = new Vector2(width, height);
         this.size = new Vector2(width, height);
     }
+
 }

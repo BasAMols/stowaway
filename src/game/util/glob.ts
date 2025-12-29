@@ -9,6 +9,7 @@ import { TickerReturnData } from "./ticker";
 import { Vector2 } from "./math/vector2";
 import { Mouse } from "./mouse";
 import { Keyboard } from "./keyboard";
+import { AreaManager } from "../stowaway/characters/map/areaManager";
 
 export interface DollarGlobal {
     tick: TickerReturnData;
@@ -22,6 +23,7 @@ export interface DollarGlobal {
     mapManager: MapManager,
     peopleManager: PeopleManager,
     routeManager: RouteManager,
+    areaManager: AreaManager,
     camera: Camera,
     mouse: Mouse,
     keyboard: Keyboard,
