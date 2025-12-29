@@ -42,6 +42,10 @@ export class Keyboard {
         return this.buttonDown(key, mod) === 2;
     }
 
+    shiftPressed(): boolean {
+        return this.pressed('shift');
+    }
+
     tick() {
         Object.keys(this.keys).forEach((key) => {
             if (this.keys[key] > 0) {

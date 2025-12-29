@@ -15,7 +15,7 @@ export class Wave extends CVE {
         if ($.tick.elapsedTime - this.lastRender > 200) {
             this.lastRender = $.tick.elapsedTime;
         }
-        this.drawSine(3840, this.height, this.frequency, 1920, this.lastRender * this.speed, this.colorA, this.colorB, 70);
+        this.drawSine(3840 * 2, this.height, this.frequency, 1920, this.lastRender * this.speed, this.colorA, this.colorB, 70);
     }
 
     drawSine(totalWidth: number, waveHeight: number, frequency: number, totalHeight: number, offset: number, colorA: [number, number, number, number], colorB: [number, number, number, number], resolution: number = 1) {

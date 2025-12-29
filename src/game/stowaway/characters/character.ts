@@ -104,7 +104,7 @@ export class Animator {
     length: number;
     duration: number;
     constructor(private sprite: CharacterSprite, private min: number, private max: number, private fps: number) {
-        this.length = (this.max - this.min) + 1;
+        this.length = (this.max - this.min);
         this.duration = this.length / this.fps * 1000;
         this.timeRef = $.tick.elapsedTime;
     }

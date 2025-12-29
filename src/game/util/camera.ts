@@ -213,6 +213,7 @@ export class Camera {
     }
 
     tick() {
+        this.mouse.tick();
         // Initialize smoothed position on first tick
         if (!this._initialized) {
             this._smoothedPosition = this.focus.clone();

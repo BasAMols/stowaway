@@ -8,13 +8,15 @@ export class Moon extends CVE {
     constructor() {
         super();
 
-        $.camera.addToZoomLayer(0.01, 'moon', this, 3);
-        $.camera.addToZoomLayer(1.5, 'moonOverlay', new CQuick({
+        // $.camera.addToZoomLayer(0.01, 'moon', this, 3);
+        $.camera.addToZoomLayer(0.8, 'moonOverlay', new CQuick({
             onRender: (that) => {
                 that.transform.setPosition(this.transform.position);
                 that.transform.setRotation(this.transform.rotation);
                 that.transform.setAnchor(this.transform.anchor);
-                $.canvas.draw.circle($.camera.translateCoordinate(new Vector2(0, 0), 0.1, 1.5), 2000, Canvas.gradient.radial($.camera.translateCoordinate(new Vector2(0, 0), 0.1, 1.5), 1200, [[0.00, '#ffffff22'], [1, '#ffffff00']]));
+                const p = $.camera.calculateWorldSpace(new Vector2(410, 200), 0.8);
+                const s = 1 / $.values.zoom;
+                $.canvas.draw.circle(p, 3000 * s, Canvas.gradient.radial(p, 1000 * s, [[0.00, '#ffffff22'], [1, '#ffffff00']]));
                 that.opacity = timeEaser(($.day % 1) * 24, [
                     [6, 1],
                     [9, 0],

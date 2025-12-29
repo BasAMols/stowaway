@@ -43,13 +43,13 @@ export class StowawayGame extends BaseGame<flags, values> {
         }[] = [];
 
         new Sky();
-        new Stars();
-        new Sun();
+        // new Stars();
+        // new Sun();
         new Moon();
-        new Test();
-        // new PC();
-        new StaticCharacter(new Vector2(472, 934), 'sit1', 1.01, 'sit', false);
-        new StaticCharacter(new Vector2(472 + 27, 934), 'sit2', 1.01, 'sit', true);
+        // new Test();
+        new PC();
+        new StaticCharacter(new Vector2(472, 934), 'sit1', 1.01, 'sitTalk', false);
+        new StaticCharacter(new Vector2(472 + 27, 934), 'sit2', 1.01, 'sitNod', true);
         new StaticCharacter(new Vector2(472 + 26, 934 - 2), 'sit3', 1.00, 'sit', true);
         new StaticCharacter(new Vector2(472 + 40, 934 - 7), 'idle', 0.99, 'idle', true);
         new StaticCharacter(new Vector2(472 - 55, 934 + 16), 'idle2', 1.03, 'sit', false);
@@ -59,13 +59,13 @@ export class StowawayGame extends BaseGame<flags, values> {
         }
 
         for (let i = 0; i < 20; i++) {
-            if (i > 9 && i < 11) {
-                continue;
-            }
+            // if (i > 9 && i < 11) {
+            //     continue;
+            // }
             ((key: string, offset: number) => {
-                const colorOffset = offset * 0.3 + 0.7;
+                const colorOffset = offset * 0.2 + 0.3;
                 this.camera.addToZoomLayer(offset, key, new Wave(770 + offset * 10 * 25, 4 * offset, 1 + 3 * offset, [28 * colorOffset, 42 * colorOffset, 58 * colorOffset, 1], [90 * colorOffset, 130 * colorOffset, 180 * colorOffset, 1], 0.0005), 6);
-            })('wave' + (i + 1), i * 0.1)
+            })('wave' + (i + 1), i * 0.1 - 0.02)
         }
 
 
