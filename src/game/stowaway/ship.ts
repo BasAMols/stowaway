@@ -18,7 +18,7 @@ export class ShipPart extends CVE {
         opacity: number;
     }
     static offset: Vector2 = new Vector2(250, -150);
-    static shipScale: number = 2;
+    static shipScale: number = 1;
 
     constructor(url: string, parallax: number, private foreground: boolean = false, private roi: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 1920, height: 1289 }) {
         super();
@@ -86,7 +86,7 @@ export class ShipPart extends CVE {
     preTransform(): void {
         if (this.foreground) {
             this.renderFirst(this.themes[0]!);
-            if ($.flags.open) {
+            if ($.flags.open || $.flags.openAll) {
                 $.areaManager.mask(this.subCanvas, new Vector2(-this.roi.x * ShipPart.shipScale, -this.roi.y * ShipPart.shipScale));
             }
         }

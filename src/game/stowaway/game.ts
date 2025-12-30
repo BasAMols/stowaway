@@ -19,7 +19,7 @@ import { PC } from "./characters/pc";
 import { StaticCharacter } from "./characters/staticCharacter";
 import { CQuick } from "../util/canvas/cr";
 
-export type flags = 'open' | 'debug';
+export type flags = 'open' | 'openAll' | 'debug';
 export type values = 'speed' | 'zoom';
 export class StowawayGame extends BaseGame<flags, values> {
     msPerDay: number = Infinity;
@@ -28,7 +28,7 @@ export class StowawayGame extends BaseGame<flags, values> {
     pc: PC;
 
     constructor(canvas: HTMLCanvasElement) {
-        super(canvas, { open: true, debug: false }, { speed: 1, zoom: 4 });
+        super(canvas, { open: true, openAll: false, debug: false }, { speed: 1, zoom: 4 });
 
         this.camera = new Camera();
         $.camera = this.camera;
@@ -73,7 +73,7 @@ export class StowawayGame extends BaseGame<flags, values> {
         for (let i = 0; i < 20; i++) {
             ((key: string, offset: number) => {
                 const colorOffset = offset * 0.4 + 0.3;
-                this.camera.addToZoomLayer(offset, key, new Wave(790 + offset * 10 * 25, 4 * offset, 1 + 3 * offset, [28 * colorOffset, 42 * colorOffset, 58 * colorOffset, 1], [90 * colorOffset, 130 * colorOffset, 180 * colorOffset, 1], 0.0005), 6);
+                new Wave(790 + offset * 10 * 25, 4 * offset, 1 + 3 * offset, [28 * colorOffset, 42 * colorOffset, 58 * colorOffset, 1], [90 * colorOffset, 130 * colorOffset, 180 * colorOffset, 1], 0.0005, 1, offset);
             })('wave' + (i + 1), i * 0.1 - 0.02)
         }
 
@@ -100,6 +100,7 @@ export class StowawayGame extends BaseGame<flags, values> {
     preTransform(): void {
         if ($.keyboard.press('e')) $.flags.open = !$.flags.open;
         if ($.keyboard.press('q')) $.flags.debug = !$.flags.debug;
+        if ($.keyboard.press('f')) $.flags.openAll = !$.flags.openAll;
         this.camera.tick();
         $.areaManager.focus = this.pc.transform.position ?? new Vector2(0, 0);
         $.areaManager.tick();

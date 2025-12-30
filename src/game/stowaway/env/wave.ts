@@ -5,13 +5,30 @@ import { Utils } from "src/game/util/math/util";
 
 export class Wave extends CVE {
     lastRender: number = 0;
-    constructor(private y: number, private height: number, private frequency: number, private colorA: [number, number, number, number], private colorB: [number, number, number, number], private speed: number = 0.0005, opacity: number = 1) {
+    constructor(private y: number, private height: number, private frequency: number, private colorA: [number, number, number, number], private colorB: [number, number, number, number], private speed: number = 0.0005, opacity: number = 1, private parallax: number = 1) {
         super();
         this.transform.setPosition(new Vector2(-1920 / 2, this.y));
         this.opacity = opacity;
+        $.camera.addToZoomLayer(parallax, 'wave', this, 6);
+
+    }
+
+    preTransform(): void {
+        if ($.values.zoom > 6 && this.parallax >= 1) {
+            if (this.parallax >= 1.2) {
+                this.opacity = 0;
+            } else {
+                this.opacity = 0.5;
+            }
+        } else {
+            this.opacity = 1;
+        }
     }
 
     render() {
+        if (this.opacity === 0) {
+            return;
+        }
         if ($.tick.elapsedTime - this.lastRender > 200) {
             this.lastRender = $.tick.elapsedTime;
         }
