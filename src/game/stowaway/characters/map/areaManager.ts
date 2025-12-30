@@ -27,12 +27,7 @@ export class AreaManager {
             'orlop5a': { polygon: [new Vector2(1900, 2190), new Vector2(2200, 2190), new Vector2(2200, 2305), new Vector2(1900, 2305)], opacity: 0, },
             'orlop6': { polygon: [new Vector2(2100, 2190), new Vector2(2400, 2190), new Vector2(2400, 2305), new Vector2(2100, 2305)], opacity: 0, },
             'orlop7': { polygon: [new Vector2(2300, 2190), new Vector2(3000, 2190), new Vector2(3000, 2305), new Vector2(2300, 2305)], opacity: 0, },
-            // 'cargo1': {polygon: [new Vector2(100, 2190), new Vector2(600, 2190), new Vector2(600, 2305), new Vector2(100, 2305)],opacity: 0, },
-            // 'cargo2': {polygon: [new Vector2(500, 2190), new Vector2(1000, 2190), new Vector2(1000, 2305), new Vector2(500, 2305)],opacity: 0, },
-            // 'cargo3': {polygon: [new Vector2(900, 2190), new Vector2(1400, 2190), new Vector2(1400, 2305), new Vector2(900, 2305)],opacity: 0, },
-            // 'cargo4': {polygon: [new Vector2(1300, 2190), new Vector2(1800, 2190), new Vector2(1800, 2305), new Vector2(1300, 2305)],opacity: 0, },
-            // 'cargo5': {polygon: [new Vector2(1700, 2190), new Vector2(2200, 2190), new Vector2(2200, 2305), new Vector2(1700, 2305)],opacity: 0, },
-            // 'cargo6': {polygon: [new Vector2(2100, 2190), new Vector2(2500, 2190), new Vector2(2500, 2305), new Vector2(2100, 2305)],opacity: 0, },
+            'cargo': { polygon: [new Vector2(600, 2190 + 140), new Vector2(2600, 2190 + 140), new Vector2(2600, 2305 + 140), new Vector2(600, 2305 + 140)], opacity: 0, },
         }
     constructor() {
 

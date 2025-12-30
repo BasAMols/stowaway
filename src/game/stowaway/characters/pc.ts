@@ -17,8 +17,8 @@ export class PC extends BaseCharacter {
     constructor() {
         super();
 
-        $.camera.addToZoomLayer(1.028, 'pc', this, 115);
-        $.camera.addToZoomLayer(1.028, 'target', (this.target = new Target()), 114);
+        $.camera.addToZoomLayer(1.01, 'pc', this, 115);
+        $.camera.addToZoomLayer(1.01, 'target', (this.target = new Target()), 114);
 
         this.transform.setPosition(new Vector2(602, 934));
 

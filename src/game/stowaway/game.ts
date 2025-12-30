@@ -50,19 +50,19 @@ export class StowawayGame extends BaseGame<flags, values> {
         // new Sun();
         new Moon();
         // new Test();
-        new StaticCharacter(new Vector2(472, 934), 'sit1', 1.01, 'sitTalk', false);
-        new StaticCharacter(new Vector2(472 + 27, 934), 'sit2', 1.01, 'sitNod', true);
-        new StaticCharacter(new Vector2(472 + 26, 934 - 2), 'sit3', 1.00, 'sit', true);
-        new StaticCharacter(new Vector2(472 + 40, 934 - 7), 'idle', 0.99, 'idle', true);
+        new StaticCharacter(new Vector2(472, 934), 'sit1', 1, 'sitTalk', false);
+        new StaticCharacter(new Vector2(472 + 27, 934), 'sit2', 1, 'sitNod', true);
+        new StaticCharacter(new Vector2(472 + 26, 934 - 2), 'sit3', 0.99, 'sit', true);
+        new StaticCharacter(new Vector2(472 + 40, 934 - 9), 'idle', 0.985, 'idle', true);
 
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 10; i++) {
             new ShipPart(
-                i.toString().padStart(4, '0') + '.png', 0.94 + i * 0.01,
-                (0.94 + i * 0.01) > 1.03,
+                i.toString().padStart(4, '0') + '.png', 0.96 + i * 0.01,
+                (0.96 + i * 0.01) > 1.01,
                 { x: 0, y: 800, width: 1920, height: 1289 - 800 }
             )
             new ShipPart(
-                i.toString().padStart(4, '0') + '.png', 0.94 + i * 0.01 + 0.0001,
+                i.toString().padStart(4, '0') + '.png', 0.96 + i * 0.01 + 0.0001,
                 false,
                 { x: 0, y: 0, width: 1920, height: 800 }
             );
@@ -71,12 +71,9 @@ export class StowawayGame extends BaseGame<flags, values> {
         this.pc = new PC();
 
         for (let i = 0; i < 20; i++) {
-            // if (i > 9 && i < 11) {
-            //     continue;
-            // }
             ((key: string, offset: number) => {
                 const colorOffset = offset * 0.4 + 0.3;
-                this.camera.addToZoomLayer(offset, key, new Wave(770 + offset * 10 * 25, 4 * offset, 1 + 3 * offset, [28 * colorOffset, 42 * colorOffset, 58 * colorOffset, 1], [90 * colorOffset, 130 * colorOffset, 180 * colorOffset, 1], 0.0005), 6);
+                this.camera.addToZoomLayer(offset, key, new Wave(790 + offset * 10 * 25, 4 * offset, 1 + 3 * offset, [28 * colorOffset, 42 * colorOffset, 58 * colorOffset, 1], [90 * colorOffset, 130 * colorOffset, 180 * colorOffset, 1], 0.0005), 6);
             })('wave' + (i + 1), i * 0.1 - 0.02)
         }
 
