@@ -11,10 +11,14 @@
         <q-slider vertical snap dark v-model="zoomValue" :min="1" :max="5" :step="0.1"
             @update:model-value="setZoomValue" style="height: 100px; margin-top: 10px;" />
     </q-drawer>
+
     <q-page class="">
-        <q-btn overlay class="fixed-top-left" top-left flat :ripple="false" text-color="white" icon="menu"
+        <q-btn overlay class="fixed-top-left" left flat :ripple="false" text-color="white" icon="menu"
             @click="toggleLeftDrawer()" style="top: 0px;" />
-        <canvas ref="canvasRef"></canvas>
+        <canvas id="target-canvasRef" ref="canvasRef"></canvas>
+        <q-tooltip max-width="1000px" style="font-size: 1.3rem;" ref="tooltipRef" no-parent-event>
+            {{ tooltipText }}
+        </q-tooltip>
 
     </q-page>
 </template>
@@ -26,16 +30,16 @@ import { flags, StowawayGame } from 'src/game/stowaway/game';
 const leftDrawerOpen = ref(false);
 const speedValue = ref(0);
 const zoomValue = ref(0);
+const tooltipRef = ref();
+const tooltipText = ref('test');
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 function setSpeedValue(value: number) {
     $.values.speed = value;
-    $.game.applyValues();
 }
 function setZoomValue(value: number) {
     $.values.zoom = value;
-    $.game.applyValues();
 }
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 
@@ -44,8 +48,10 @@ function trigger(flag: flags) {
 }
 
 onMounted(() => {
+    tooltipRef.value.show();
+
     if (canvasRef.value) {
-        const game = new StowawayGame(canvasRef.value);
+        const game = new StowawayGame(canvasRef.value, tooltipText);
         game.start();
     }
 });

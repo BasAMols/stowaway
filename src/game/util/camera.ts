@@ -12,6 +12,11 @@ export class Camera {
         element: CVE;
     }> = {};
 
+    dynamicLayers: Record<string, {
+        parallax: number;
+        element: CVE;
+    }> = {};
+
     public focus: Vector2 = new Vector2(0, 0);
 
     // Camera easing parameters
@@ -40,11 +45,27 @@ export class Camera {
         });
     }
 
-    addZoomLayer(key: string, parallax: number) {
+    private addZoomLayer(key: string, parallax: number) {
         this.zoomLayers[key] = {
             parallax: parallax,
             element: new CVE(),
         }
+    }
+
+    addToDynamicLayer(key: string, element: CVE, order: number = 1) {
+        element.add(key, this.dynamicLayers[key].element, 1);
+    }
+
+    createDynamicLayer(key: string, parallax: number, element: CVE, order: number = 1) {
+        this.dynamicLayers[key] = {
+            parallax: parallax,
+            element: new CVE(),
+        }
+        this.addToDynamicLayer(key, element, order);
+    }
+
+    setDynamicLayerParallax(key: string, parallax: number) {
+        this.dynamicLayers[key].parallax = parallax;
     }
 
     addToZoomLayer(parallax: number, name: string, element: CVE, order: number = 1) {
@@ -266,7 +287,8 @@ export class Camera {
         // Convert back to gameArea coordinates for positioning calculations
         const clampedFocus = clampedFocusInWorld.subtract(gameAreaToWorldOffset);
 
-        for (const layer of Object.values(this.zoomLayers)) {
+
+        [...Object.values(this.zoomLayers), ...Object.values(this.dynamicLayers)].forEach((layer) => {
             if (layer.parallax === 0) {
                 // Static layers (parallax=0) should not be affected by camera at all
                 // They draw at window size and don't move or scale
@@ -293,7 +315,8 @@ export class Camera {
                 layer.element.transform.setPosition(layerPosition);
                 layer.element.transform.setScale(layerScale);
             }
-        }
+        });
+
     }
 
     private _updateSmoothedPosition() {

@@ -218,4 +218,33 @@ export class Vector2 {
     equals(other: Vector2): boolean {
         return this.x === other.x && this.y === other.y;
     }
+
+    toString(settings: {
+        precision?: number | undefined,
+        unit?: boolean,
+        parenthesis?: boolean,
+        seperator?: string,
+    } = {}): string {
+
+        let string = ``;
+        let x = String(this.x);
+        let y = String(this.y);
+
+        if (settings.precision !== undefined) {
+            x = this.x.toFixed(settings.precision);
+            y = this.y.toFixed(settings.precision);
+        }
+
+        if (settings.parenthesis) string += `(`;
+
+        string += x;
+        string += settings.unit ? `px` : ``;
+        string += settings.seperator ?? ',';
+        string += y;
+        string += settings.unit ? `px` : ``;
+
+        if (settings.parenthesis) string += `)`
+
+        return string;
+    }
 }

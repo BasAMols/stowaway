@@ -10,6 +10,7 @@ import { Vector2 } from "./math/vector2";
 import { Mouse } from "./mouse";
 import { Keyboard } from "./keyboard";
 import { AreaManager } from "../stowaway/characters/map/areaManager";
+import { Ref } from "vue";
 
 export interface DollarGlobal {
     tick: TickerReturnData;
@@ -29,6 +30,7 @@ export interface DollarGlobal {
     keyboard: Keyboard,
     flags: Record<string, boolean>,
     values: Record<string, number>,
+    tooltip: Ref<string, string>,
 }
 
 declare global {

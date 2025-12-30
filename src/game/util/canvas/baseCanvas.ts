@@ -56,11 +56,12 @@ export abstract class BaseCanvas {
             this.ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI);
             this.ctx.fill();
         },
-        line: (position1: Vector2, position2: Vector2, color?: string | CanvasGradient | CanvasPattern) => {
+        line: (position1: Vector2, position2: Vector2, color?: string | CanvasGradient | CanvasPattern, lineWidth: number = 1) => {
             if (color) this.ctx.strokeStyle = color;
             this.ctx.beginPath();
             this.ctx.moveTo(position1.x, position1.y);
             this.ctx.lineTo(position2.x, position2.y);
+            this.ctx.lineWidth = lineWidth;
             this.ctx.stroke();
         },
         polygonStroke: (polygon: Vector2[], color?: string | CanvasGradient | CanvasPattern, lineWidth?: number) => {

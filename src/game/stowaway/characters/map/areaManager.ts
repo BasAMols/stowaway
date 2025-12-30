@@ -46,16 +46,14 @@ export class AreaManager {
         });
 
     }
-    target(position: Vector2): Vector2 | undefined {
+    target(position: Vector2): [Vector2, number] | undefined {
         const target = Object.entries($.mapManager.locations)
-            .filter(location => location[1].data.position.y > position.y)
             .sort((a, b) => a[1].data.position.subtract(position).magnitude() - b[1].data.position.subtract(position).magnitude())[0];
 
         if (!target) return undefined;
 
         const p = target[1].data.position.clone()
-        p.x = position.x
-        return p;
+        return [p, target[1].data.depth];
     }
     checkRooms(position: Vector2) {
         const p = position.clone().subtract(ShipPart.offset).multiply(ShipPart.shipScale);
@@ -77,7 +75,6 @@ export class AreaManager {
     mask(canvas: BaseCanvas, offset: Vector2) {
         this.areas.forEach(area => {
             if (area.opacity > 0 || $.flags.openAll) {
-                console.log(area.opacity);
                 canvas.ctx.globalAlpha = $.flags.openAll ? 1 : area.opacity;
                 canvas.save();
                 canvas.move(offset);

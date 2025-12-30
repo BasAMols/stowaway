@@ -32,7 +32,7 @@ export class MapLocation extends CVE {
     }
     render() {
         if ($.flags.debug) {
-            $.canvas.draw.circle($.camera.translateCoordinate(this.data.position, 1, 2), 3, '#f00');
+            $.canvas.draw.circle($.camera.translateCoordinate(this.data.position, 1, 2), 1, '#fff');
         }
     }
 

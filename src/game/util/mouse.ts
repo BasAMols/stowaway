@@ -75,6 +75,8 @@ export class Mouse {
         if (this.down) {
             this.downTime += $.tick.deltaTime;
         }
+        $.tooltip.value = this.worldSpace?.toString({ precision: 0, unit: false, parenthesis: false, seperator: ' ' }) ?? ' ';
+
     }
 
     clickListeners: ((position: Vector2) => void)[] = [];

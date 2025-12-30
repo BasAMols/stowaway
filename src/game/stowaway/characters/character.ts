@@ -145,13 +145,17 @@ export class Character extends CVE {
         this.load({ key: 'idle', grid: [5, 4], to: 18, fps: 5 });
         this.load({ key: 'sit', grid: [4, 4], to: 12, fps: 5 });
 
-        $.camera.addToZoomLayer(1.01, 'character_' + this.data.name, this, 115);
+        $.camera.createDynamicLayer('character_' + this.data.name, 1.01, this, 115);
     }
 
     load({ key, grid, to, fps = 5, from = 0, imageurl = key }: { imageurl?: string; key: string; grid: [number, number]; from?: number; to: number; fps?: number; }) {
         void $.loader.loadImage(`dist/spa/images/ani/m/${imageurl}.png`).then(image => {
             this.sprites[key] = new Animator(new CharacterSprite(image, new Vector2(64, 128), grid), from, to, fps)
         });
+    }
+
+    preTick(): void {
+        $.camera.setDynamicLayerParallax('character_' + this.data.name, this.schedule.getInfoAtTime().depth);
     }
 
     preTransform() {
@@ -176,7 +180,6 @@ export class Character extends CVE {
 
         this.transform.setPosition(info.position);
         this.lastPosition = info.position;
-        this.order = info.depth;
 
     }
     render() {

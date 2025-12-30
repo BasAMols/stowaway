@@ -18,6 +18,8 @@ import { Stars } from "./env/stars";
 import { PC } from "./characters/pc";
 import { StaticCharacter } from "./characters/staticCharacter";
 import { CQuick } from "../util/canvas/cr";
+import { QTooltip } from "quasar";
+import { Ref } from "vue";
 
 export type flags = 'open' | 'openAll' | 'debug';
 export type values = 'speed' | 'zoom';
@@ -27,10 +29,11 @@ export class StowawayGame extends BaseGame<flags, values> {
     parts: ShipPart[] = [];
     pc: PC;
 
-    constructor(canvas: HTMLCanvasElement) {
-        super(canvas, { open: true, openAll: false, debug: false }, { speed: 1, zoom: 4 });
+    constructor(canvas: HTMLCanvasElement, tooltip: Ref<string, string>) {
+        super(canvas, { open: true, openAll: true, debug: true }, { speed: 1, zoom: 4 });
 
         this.camera = new Camera();
+        $.tooltip = tooltip;
         $.camera = this.camera;
         $.mouse = this.camera.mouse;
         $.game = this;
@@ -53,16 +56,17 @@ export class StowawayGame extends BaseGame<flags, values> {
         new StaticCharacter(new Vector2(472, 934), 'sit1', 1, 'sitTalk', false);
         new StaticCharacter(new Vector2(472 + 27, 934), 'sit2', 1, 'sitNod', true);
         new StaticCharacter(new Vector2(472 + 26, 934 - 2), 'sit3', 0.99, 'sit', true);
-        new StaticCharacter(new Vector2(472 + 40, 934 - 9), 'idle', 0.985, 'idle', true);
+        new StaticCharacter(new Vector2(472 + 40, 934 - 9), 'idle', 0.99, 'idle', true);
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 7; i++) {
+            const o = 0.97 + i * 0.015;
             new ShipPart(
-                i.toString().padStart(4, '0') + '.png', 0.96 + i * 0.01,
-                (0.96 + i * 0.01) > 1.01,
+                i.toString().padStart(4, '0') + '.png', o,
+                (o) > 1.02,
                 { x: 0, y: 800, width: 1920, height: 1289 - 800 }
             )
             new ShipPart(
-                i.toString().padStart(4, '0') + '.png', 0.96 + i * 0.01 + 0.0001,
+                i.toString().padStart(4, '0') + '.png', o + 0.0001,
                 false,
                 { x: 0, y: 0, width: 1920, height: 800 }
             );
@@ -81,39 +85,43 @@ export class StowawayGame extends BaseGame<flags, values> {
         Object.entries(this.camera.zoomLayers).forEach(([key, layer]) => {
             layer.element.add(key, this, layer.parallax + 1);
         });
-
-        this.applyFlags();
-        this.applyValues();
+        Object.entries(this.camera.dynamicLayers).forEach(([key, layer]) => {
+            layer.element.add(key, this, layer.parallax + 1);
+        });
 
         this.camera.focus = new Vector2(500, 900);
     }
 
     tick() {
-        super.tick();
+        $.areaManager.focus = this.pc.transform.position ?? new Vector2(0, 0);
+        if ($.keyboard.press('e')) $.flags.open = !$.flags.open;
+        if ($.keyboard.press('q')) $.flags.debug = !$.flags.debug;
+        if ($.keyboard.press('f')) $.flags.openAll = !$.flags.openAll;
+
+        $.keyboard.tick();
+        $.mouse.tick();
+        $.canvas.save();
+        $.camera.tick();
+        $.areaManager.tick();
+
+        this.transform.apply($.canvas.ctx);
+
+
+        // for (const child of Object.values(this.below).sort((a, b) => a.order - b.order)) {
+        //     child.tick();
+        // }
+
+        [...Object.values(this.camera.zoomLayers), ...Object.values(this.camera.dynamicLayers)].sort((a, b) => a.parallax - b.parallax).forEach((layer, index) => {
+            layer.element.order = index + 1;
+            layer.element.tick();
+        });
+
+
     }
 
     getTargetPosition(): Vector2 {
         const transform = Transform2d.calculateWorldTransform([$.peopleManager.people.find(person => person.data.name === 'Dave')!.transform, this.transform]);
         return transform.position.add(new Vector2(0, -30));
-    }
-
-    preTransform(): void {
-        if ($.keyboard.press('e')) $.flags.open = !$.flags.open;
-        if ($.keyboard.press('q')) $.flags.debug = !$.flags.debug;
-        if ($.keyboard.press('f')) $.flags.openAll = !$.flags.openAll;
-        this.camera.tick();
-        $.areaManager.focus = this.pc.transform.position ?? new Vector2(0, 0);
-        $.areaManager.tick();
-    }
-
-    postRender(): void {
-    }
-
-    applyFlags() {
-    }
-
-    applyValues() {
-        // this.msPerDay = 60000 / $.values.speed;
     }
 
 }

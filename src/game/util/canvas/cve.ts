@@ -50,6 +50,15 @@ export class CVE {
         Object.values(this.children).forEach(child => child.loaded());
     }
 
+    preTick() {
+        // void
+    }
+
+    _preTick() {
+        this.preTick();
+        Object.values(this.children).forEach(child => child._preTick());
+    }
+
     preTransform() {
         // void
     }

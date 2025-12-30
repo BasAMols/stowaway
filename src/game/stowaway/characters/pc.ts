@@ -13,17 +13,19 @@ export class PC extends BaseCharacter {
     targetPosition: Vector2;
     running: boolean = false;
     target: Target;
+    front
 
     constructor() {
         super();
 
-        $.camera.addToZoomLayer(1.01, 'pc', this, 115);
-        $.camera.addToZoomLayer(1.01, 'target', (this.target = new Target()), 114);
+        $.camera.createDynamicLayer('pc', 1.02, this, 115);
+        // $.camera.addToZoomLayer(1.02, 'pc', this, 115);
+        $.camera.addToZoomLayer(1.02, 'target', (this.target = new Target()), 114);
 
         this.transform.setPosition(new Vector2(602, 934));
 
         $.mouse.registerClickListener((position) => {
-            this.targetPosition = $.areaManager.target(position);
+            this.targetPosition = $.areaManager.target(position)?.[0];
             this.target.target = this.targetPosition;
             this.target.visible = true;
             if ($.keyboard.pressed('shift')) {
@@ -48,6 +50,12 @@ export class PC extends BaseCharacter {
         this.activeSprite = sprite;
     }
     preTransform(): void {
+
+        const target = $.areaManager.target(this.transform.position);
+        if (target) {
+            $.camera.setDynamicLayerParallax('pc', target[1]);
+        }
+
         if (this.targetPosition) {
             const speed = this.running ? this.speed * 3 : this.speed;
             if (this.targetPosition.subtract(this.transform.position).magnitude() < speed / $.tick.deltaTime) {

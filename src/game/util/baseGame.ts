@@ -47,6 +47,7 @@ export abstract class BaseGame<flags extends string, values extends string> exte
             $.day = 0.8;
             $.hour = $.day * 24;
             $.time = $.hour % 24;
+            this._preTick();
             this.tick();
         });
 
@@ -77,7 +78,5 @@ export abstract class BaseGame<flags extends string, values extends string> exte
 
     toggleflag(flag: flags) {
         this.flags[flag] = !this.flags[flag];
-        this.applyFlags();
     }
-    abstract applyFlags(): void;
 }

@@ -54,7 +54,12 @@ export class MapConnection extends CVE {
     }
     render() {
         if ($.flags.debug) {
-            $.canvas.draw.line($.camera.translateCoordinate(this.fromLocation.data.position, 1, 2), $.camera.translateCoordinate(this.toLocation.data.position, 1, 2), '#0f0');
+            $.canvas.draw.line(
+                $.camera.translateCoordinate(this.fromLocation.data.position, 1, 2),
+                $.camera.translateCoordinate(this.toLocation.data.position, 1, 2),
+                '#0f0',
+                0.3
+            );
         }
     }
 }
