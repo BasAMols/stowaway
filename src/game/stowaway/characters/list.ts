@@ -101,8 +101,11 @@ horizontal({
         ...stairOffset,
         { index: 4, offset: new Vector2(30, 0) },
         { index: 5, offset: new Vector2(20, 0) },
-        { index: 11, offset: new Vector2(-15, 0) }
-    ]
+        { index: 11, offset: new Vector2(-15, 0) },
+    ],
+    // excludeForward: [11, 12, 21, 22, 14, 23],
+    // excludeBackward: [11, 12, 21, 22, 14, 23],
+    // excludeDirect: [12, 22, 23],
 });
 horizontal({
     name: 'mainDeck', start: 11, to: 25, position: new Vector2(0, 1063), distance: 50,
