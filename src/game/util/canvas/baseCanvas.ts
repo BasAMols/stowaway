@@ -102,12 +102,12 @@ export abstract class BaseCanvas {
             this.ctx.fill();
             this.ctx.globalCompositeOperation = 'source-over';
         },
-        polygon: (polygon: Vector2[] | [number, number][], flip: boolean = false) => {
+        polygon: (polygon: Vector2[], flip: boolean = false) => {
             this.mask._start(flip);
-            this.ctx.moveTo(polygon[0][0], polygon[0][1]);
+            this.ctx.moveTo(polygon[0].x, polygon[0].y);
             polygon.forEach((point, index) => {
                 if (index > 0) {
-                    this.ctx.lineTo(point[0], point[1]);
+                    this.ctx.lineTo(point.x, point.y);
                 }
             });
             this.mask._end();
