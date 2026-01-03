@@ -11,6 +11,8 @@ import { RouteManager } from "src/game/stowaway/characters/managers/routeManager
 import { DollarGlobal } from "./glob";
 import { Keyboard } from "./keyboard";
 import { AreaManager } from "../stowaway/characters/map/areaManager";
+import { Camera } from "./camera";
+import { CQuick } from "./canvas/cr";
 
 
 export abstract class BaseGame<flags extends string, values extends string> extends CVE {
@@ -35,6 +37,9 @@ export abstract class BaseGame<flags extends string, values extends string> exte
             areaManager: new AreaManager(),
 
         } as unknown as DollarGlobal;
+
+        $.camera = new Camera();
+        $.mouse = $.camera.mouse;
 
         this.keyboard = new Keyboard($.canvas);
         $.keyboard = this.keyboard;
@@ -70,10 +75,29 @@ export abstract class BaseGame<flags extends string, values extends string> exte
         }
     }
 
+    loaded() {
+        super.loaded();
+
+
+        Object.entries($.camera.zoomLayers).forEach(([key, layer]) => {
+            layer.element.add(key, this, layer.parallax + 1);
+        });
+        Object.entries($.camera.dynamicLayers).forEach(([key, layer]) => {
+            layer.element.add(key, this, layer.parallax + 1);
+        });
+
+    }
+
+
     tick() {
         $.keyboard.tick();
         $.mouse.tick();
-        super.tick();
+        $.camera.tick();
+
+        [...Object.values($.camera.zoomLayers), ...Object.values($.camera.dynamicLayers)].sort((a, b) => a.parallax - b.parallax).forEach((layer, index) => {
+            layer.element.order = index + 1;
+            layer.element.tick();
+        });
     }
 
     toggleflag(flag: flags) {

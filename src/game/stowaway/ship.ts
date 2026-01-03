@@ -18,7 +18,8 @@ export class ShipPart extends CVE {
         opacity: number;
     }
     static offset: Vector2 = new Vector2(250, -150);
-    static shipScale: number = 1.5;
+    static shipScale: number = 1;
+    lastTheme: number = 0;
 
     constructor(url: string, parallax: number, private foreground: boolean = false, private roi: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 1920, height: 1289 }) {
         super();
@@ -43,14 +44,14 @@ export class ShipPart extends CVE {
         // });
         // console.log('day_' + url);
 
-        // void $.loader.loadImage('dist/spa/images/ship/day_' + url).then((image) => {
-        //     this.themes.push({
-        //         timeData: [[5, 0], [8, 1], [17, 1], [20, 0]],
-        //         image: image,
-        //         opacity: 1,
-        //     });
-        //     // this.renderFirst(this.themes[0]!);
-        // });
+        void $.loader.loadImage('dist/spa/images/ship/day_' + url).then((image) => {
+            this.themes.push({
+                timeData: [[5, 0], [8, 1], [17, 1], [20, 0]],
+                image: image,
+                opacity: 1,
+            });
+            // this.renderFirst(this.themes[0]!);
+        });
         void $.loader.loadImage('dist/spa/images/ship/night_' + url).then((image) => {
             this.themes.push({
                 timeData: [[5, 1], [8, 0], [17, 0], [20, 1]],
@@ -84,17 +85,41 @@ export class ShipPart extends CVE {
     }
 
     preTransform(): void {
-        if (this.foreground) {
-            this.renderFirst(this.themes[0]!);
+        const themeIndex = this.themes.findIndex(theme => theme.timeData[0][1] === ($.flags.night ? 1 : 0));
+
+        if (themeIndex !== this.lastTheme && !this.foreground) {
+            this.renderFirst(this.themes[themeIndex]!);
+        } else if (this.foreground) {
+            this.renderFirst(this.themes[themeIndex]!);
             if ($.flags.open || $.flags.openAll) {
                 $.areaManager.mask(this.subCanvas, new Vector2(-this.roi.x * ShipPart.shipScale, -this.roi.y * ShipPart.shipScale));
             }
         }
+        this.lastTheme = themeIndex;
 
         this.transform.setScale(1 / ShipPart.shipScale);
         this.transform.setPosition(ShipPart.offset);
+
     }
     render() {
         $.canvas.draw.canvas(this.subCanvas, new Vector2(this.roi.x * ShipPart.shipScale, this.roi.y * ShipPart.shipScale), 1);
+    }
+}
+
+export class Ship {
+    constructor() {
+        for (let i = 0; i < 7; i++) {
+            const o = 0.97 + i * 0.015;
+            new ShipPart(
+                i.toString().padStart(4, '0') + '.png', o,
+                (o) > 1.03,
+                { x: 0, y: 800, width: 1920, height: 1289 - 800 }
+            )
+            new ShipPart(
+                i.toString().padStart(4, '0') + '.png', o + 0.0001,
+                false,
+                { x: 0, y: 0, width: 1920, height: 800 }
+            );
+        }
     }
 }

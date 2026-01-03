@@ -4,6 +4,9 @@ export class Utils {
     static easeColor(interval: number, from: [number, number, number, number], to: [number, number, number, number]): string {
         return `rgba(${from[0] * interval + to[0] * (1 - interval)}, ${from[1] * interval + to[1] * (1 - interval)}, ${from[2] * interval + to[2] * (1 - interval)}, ${from[3] * interval + to[3] * (1 - interval)})`;
     }
+    static stringToColor(color: [number, number, number, number]): string {
+        return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
+    }
     static colorToArray(color: string): [number, number, number, number] {
         const match = color.match(/^rgba?\((\d+),(\d+),(\d+),?(\d*)?\)$/);
         if (!match) {
