@@ -31,7 +31,7 @@ export class BaseCharacter extends CVE {
             return;
         }
 
-        void $.loader.loadImage(`dist/spa/images/ani/m/${imageurl}.png`).then(image => {
+        void $.loader.loadImage(`src/assets/ani/m/${imageurl}.png`).then(image => {
             this.sprites[key] = new Animator(new CharacterSprite(image, new Vector2(64, 128), grid), from, to, fps)
         });
     }

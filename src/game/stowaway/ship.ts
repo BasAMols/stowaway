@@ -28,14 +28,14 @@ export class ShipPart extends CVE {
 
         $.camera.addToZoomLayer(parallax, 'ship', this, 10);
 
-        // void $.loader.loadImage('dist/spa/images/ship/animationDay/' + url).then((image) => {
+        // void $.loader.loadImage('src/assets/ship/animationDay/' + url).then((image) => {
         //     this.themes.push({
         //         timeData: [[8, 0], [11, 1], [14, 1], [17, 0]],
         //         image: image,
         //         opacity: 1,
         //     });
         // });
-        // void $.loader.loadImage('dist/spa/images/ship/animationSunSet/' + url).then((image) => {
+        // void $.loader.loadImage('src/assets/ship/animationSunSet/' + url).then((image) => {
         //     this.themes.push({
         //         timeData: [[14, 0], [17, 1], [20, 0]],
         //         image: image,
@@ -44,7 +44,7 @@ export class ShipPart extends CVE {
         // });
         // console.log('day_' + url);
 
-        void $.loader.loadImage('dist/spa/images/ship/day_' + url).then((image) => {
+        void $.loader.loadImage('src/assets/ship/day_' + url).then((image) => {
             this.themes.push({
                 timeData: [[5, 0], [8, 1], [17, 1], [20, 0]],
                 image: image,
@@ -52,7 +52,7 @@ export class ShipPart extends CVE {
             });
             // this.renderFirst(this.themes[0]!);
         });
-        void $.loader.loadImage('dist/spa/images/ship/night_' + url).then((image) => {
+        void $.loader.loadImage('src/assets/ship/night_' + url).then((image) => {
             this.themes.push({
                 timeData: [[5, 1], [8, 0], [17, 0], [20, 1]],
                 image: image,
@@ -60,7 +60,7 @@ export class ShipPart extends CVE {
             });
             this.renderFirst(this.themes[0]!);
         });
-        // void $.loader.loadImage('dist/spa/images/ship/animationSunRise/' + url).then((image) => {
+        // void $.loader.loadImage('src/assets/ship/animationSunRise/' + url).then((image) => {
         //     this.themes.push({
         //         timeData: [[5, 0], [8, 1], [11, 0]],
         //         image: image,
