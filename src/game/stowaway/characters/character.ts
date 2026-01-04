@@ -149,7 +149,7 @@ export class Character extends CVE {
     }
 
     load({ key, grid, to, fps = 5, from = 0, imageurl = key }: { imageurl?: string; key: string; grid: [number, number]; from?: number; to: number; fps?: number; }) {
-        void $.loader.loadImage(`src/assets/ani/m/${imageurl}.png`).then(image => {
+        void $.loader.loadImage(`/public/ani/m/${imageurl}.png`).then(image => {
             this.sprites[key] = new Animator(new CharacterSprite(image, new Vector2(64, 128), grid), from, to, fps)
         });
     }
