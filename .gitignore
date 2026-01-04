@@ -2,6 +2,7 @@
 .thumbs.db
 node_modules
 .lnk
+/dist
 
 # Quasar core related directories
 .quasar
