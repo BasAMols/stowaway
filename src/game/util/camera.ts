@@ -34,8 +34,8 @@ export class Camera {
     private _velocity: Vector2 = new Vector2(0, 0);
     private _initialized: boolean = false;
 
-    static worldArea: Vector2 = new Vector2(5000, 1350);
-    static gameArea: Vector2 = new Vector2(1920, 1350);
+    static worldArea: Vector2 = new Vector2(5000, 1800);
+    static gameArea: Vector2 = new Vector2(1920, 1800);
 
     constructor() {
 

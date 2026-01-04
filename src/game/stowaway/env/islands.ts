@@ -4,7 +4,7 @@ import { Vector2 } from "src/game/util/math/vector2";
 export class Islands {
     constructor() {
         new LayerAsset({
-            url: `dist/spa/images/island/islandNight_`, key: 'islandNight', fromIndex: 0, toIndex: 2, extention: '.png', position: new Vector2(2100, 540), originalSize: new Vector2(6787, 1933), scale: 0.2, drawScale: 0.15, depth: 0.1, increment: 0.015,
+            url: `dist/spa/images/island/islandNight_`, key: 'islandNight', fromIndex: 0, toIndex: 2, extention: '.png', position: new Vector2(2100, 850), originalSize: new Vector2(6787, 1933), scale: 0.2, drawScale: 0.15, depth: 0.1, increment: 0.015,
             preTransform: (that) => {
                 that.opacity = $.flags.night ? 1 : 0;
                 const t = ($.tick.elapsedTime % 100000) / 100000;
@@ -12,7 +12,7 @@ export class Islands {
             }
         });
         new LayerAsset({
-            url: `dist/spa/images/island/islandDay_`, key: 'islandDay', fromIndex: 0, toIndex: 2, extention: '.png', position: new Vector2(2100, 540), originalSize: new Vector2(6787, 1933), scale: 0.2, drawScale: 0.15, depth: 0.1, increment: 0.015,
+            url: `dist/spa/images/island/islandDay_`, key: 'islandDay', fromIndex: 0, toIndex: 2, extention: '.png', position: new Vector2(2100, 850), originalSize: new Vector2(6787, 1933), scale: 0.2, drawScale: 0.15, depth: 0.1, increment: 0.015,
             preTransform: (that) => {
                 that.opacity = $.flags.night ? 0 : 1;
                 const t = ($.tick.elapsedTime % 100000) / 100000;

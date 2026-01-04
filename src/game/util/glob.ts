@@ -11,6 +11,7 @@ import { Mouse } from "./mouse";
 import { Keyboard } from "./keyboard";
 import { AreaManager } from "../stowaway/characters/map/areaManager";
 import { Ref } from "vue";
+import { Mover } from "../stowaway/characters/mover";
 
 export interface DollarGlobal {
     tick: TickerReturnData;
@@ -31,6 +32,7 @@ export interface DollarGlobal {
     flags: Record<string, boolean>,
     values: Record<string, number>,
     tooltip: Ref<string, string>,
+    mover: Mover,
 }
 
 declare global {

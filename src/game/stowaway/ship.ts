@@ -17,11 +17,11 @@ export class ShipPart extends CVE {
         size: Vector2;
         opacity: number;
     }
-    static offset: Vector2 = new Vector2(250, -150);
+    static offset: Vector2 = new Vector2(250, -100);
     static shipScale: number = 1;
     lastTheme: number = 0;
 
-    constructor(url: string, parallax: number, private foreground: boolean = false, private roi: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 1920, height: 1289 }) {
+    constructor(url: string, parallax: number, private foreground: boolean = false, private roi: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 1783, height: 1541 }) {
         super();
 
         this.subCanvas = new SubCanvas(new Vector2(this.roi.width * ShipPart.shipScale, this.roi.height * ShipPart.shipScale));
@@ -73,14 +73,14 @@ export class ShipPart extends CVE {
         this.subCanvas.save();
         this.subCanvas.ctx.globalCompositeOperation = 'source-over';
         this.subCanvas.ctx.globalAlpha = 1;
-        this.subCanvas.draw.image(theme.image, new Vector2(-this.roi.x * ShipPart.shipScale, -this.roi.y * ShipPart.shipScale), new Vector2(1920 * ShipPart.shipScale, 1289 * ShipPart.shipScale));
+        this.subCanvas.draw.image(theme.image, new Vector2(-this.roi.x * ShipPart.shipScale, -this.roi.y * ShipPart.shipScale), new Vector2(1783 * ShipPart.shipScale, 1541 * ShipPart.shipScale));
         this.subCanvas.restore();
     }
     renderSecond(theme: typeof this.themes[number]) {
         this.subCanvas.save();
         this.subCanvas.ctx.globalCompositeOperation = 'source-atop';
         this.subCanvas.ctx.globalAlpha = theme.opacity;
-        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(1920 * ShipPart.shipScale, 1289 * ShipPart.shipScale));
+        this.subCanvas.draw.image(theme.image, new Vector2(0, 0), new Vector2(1783 * ShipPart.shipScale, 1541 * ShipPart.shipScale));
         this.subCanvas.restore();
     }
 
@@ -113,12 +113,12 @@ export class Ship {
             new ShipPart(
                 i.toString().padStart(4, '0') + '.png', o,
                 (o) > 1.03,
-                { x: 0, y: 800, width: 1920, height: 1289 - 800 }
+                { x: 0, y: 800, width: 1783, height: 1541 - 800 }
             )
             new ShipPart(
                 i.toString().padStart(4, '0') + '.png', o + 0.0001,
                 false,
-                { x: 0, y: 0, width: 1920, height: 800 }
+                { x: 0, y: 0, width: 1783, height: 800 }
             );
         }
     }

@@ -21,6 +21,7 @@ import { QTooltip } from "quasar";
 import { Ref } from "vue";
 import { LayerAsset } from "../util/layerAsset";
 import { Islands } from "./env/islands";
+import { Mover } from "./characters/mover";
 
 export type flags = 'open' | 'openAll' | 'debug' | 'night';
 export type values = 'speed' | 'zoom';
@@ -30,7 +31,7 @@ export class StowawayGame extends BaseGame<flags, values> {
     pc: PC;
 
     constructor(canvas: HTMLCanvasElement, tooltip: Ref<string, string>) {
-        super(canvas, { open: true, openAll: false, debug: false, night: true, }, { speed: 1, zoom: 4 });
+        super(canvas, { open: true, openAll: false, debug: false, night: false, }, { speed: 1, zoom: 10 });
 
         $.tooltip = tooltip;
         $.game = this;
@@ -38,6 +39,7 @@ export class StowawayGame extends BaseGame<flags, values> {
         $.mapManager = new MapManager(mapLocations, mapConnections);
         $.mapManager.build();
         $.peopleManager = new PeopleManager(getPeople());
+        $.mover = new Mover();
 
         new Sky();
         new Moon();
@@ -45,13 +47,13 @@ export class StowawayGame extends BaseGame<flags, values> {
         new Islands();
         new Ship();
 
-        new StaticCharacter(new Vector2(472, 934), 'sit1', 1, 'sitTalk', false);
-        new StaticCharacter(new Vector2(472 + 27, 934), 'sit2', 1, 'sitNod', true);
-        new StaticCharacter(new Vector2(472 + 26, 934 - 2), 'sit3', 0.99, 'sit', true);
-        new StaticCharacter(new Vector2(472 + 40, 934 - 9), 'idle', 0.99, 'idle', true);
+        new StaticCharacter(new Vector2(450, 1233), 'sit1', 1.025, 'sitTalk', false);
+        new StaticCharacter(new Vector2(450 + 27, 1233), 'sit2', 1.025, 'sitNod', true);
+        new StaticCharacter(new Vector2(450 + 26, 1233 - 2), 'sit3', 1.02, 'sit', true);
+        new StaticCharacter(new Vector2(450 + 60, 1233 - 2), 'idle', 1.02, 'idle', true);
         this.pc = new PC();
 
-        this.pc.transform.setPosition(new Vector2(500, 800));
+        this.pc.transform.setPosition(new Vector2(400, 1230));
 
 
         $.camera.addToZoomLayer(2, 'areaManager', new CQuick({
@@ -64,7 +66,8 @@ export class StowawayGame extends BaseGame<flags, values> {
             },
         }), 1);
 
-        $.camera.focus = new Vector2(500, 800);
+        $.camera.focus = new Vector2(500, 1230);
+        $.mover.target = this.pc;
     }
 
     tick() {
@@ -72,6 +75,8 @@ export class StowawayGame extends BaseGame<flags, values> {
         if ($.keyboard.press('q')) $.flags.debug = !$.flags.debug;
         if ($.keyboard.press('f')) $.flags.openAll = !$.flags.openAll;
         if ($.keyboard.press('n')) $.flags.night = !$.flags.night;
+
+        $.mover.tick();
 
         super.tick();
 

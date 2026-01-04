@@ -36,6 +36,8 @@ export class AreaManager {
     }[] = [];
     constructor() {
 
+        const overlap = 150;
+
         ([
             // top deck
             [[70, 840], [240, 840], [300, 870], [400, 870], [400, 917], [275, 917], [240, 880], [70, 880]], // Top deck
@@ -52,23 +54,23 @@ export class AreaManager {
             [[110, 1020], [200 - 10, 1020], [235 - 10, 990], [350, 990], [350, 1089], [130, 1089]],
             [[300, 990], [400, 990], [400, 1089], [300, 1089],],
             [[350, 990], [500, 990], [530, 1025], [600, 1025], [600, 1089], [350, 1089]],
-            ...repeatMask(550, 1025, new Vector2(100, 64), 7, 50),
+            ...repeatMask(550, 1025, new Vector2(100, 64), 7, overlap),
             [[1200, 1025], [1390, 1025], [1375, 1089], [1200, 1089]],
 
             // orlop deck
             [[131, 1095], [250, 1095], [250, 1153], [150, 1153]],
-            ...repeatMask(200, 1095, new Vector2(100, 58), 10, 50),
+            ...repeatMask(200, 1095, new Vector2(100, 58), 10, overlap),
             [[1200, 1095], [1370, 1095], [1320, 1153], [1200, 1153]],
 
             // cargo deck
-            ...repeatMask(200, 1158, new Vector2(100, 64), 10, 50),
+            ...repeatMask(200, 1158, new Vector2(100, 64), 10, overlap),
             [[1200, 1158], [1310, 1158], [1310, 1222], [1200, 1222]],
 
         ] as [number, number][][]).forEach((area) => {
             this.areas.push({
                 points: area.map(point => new Vector2(
-                    point[0] * ShipPart.shipScale,
-                    point[1] * ShipPart.shipScale
+                    point[0] * ShipPart.shipScale * 0.935 - 15,
+                    point[1] * ShipPart.shipScale * 0.935 + 320
                 )),
                 opacity: 0,
                 active: false,

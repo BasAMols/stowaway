@@ -8,7 +8,7 @@ import { MapLocation, MapLocationType } from "../map/mapLocation";
 export class MapManager {
 
     public locations: Record<string, MapLocation> = {};
-    public mapConnections: MapConnection[] = [];
+    public connections: MapConnection[] = [];
     public readonly routeManager: RouteManager;
     // dom: Div;
     // mapSvg: Svg;
@@ -24,7 +24,7 @@ export class MapManager {
         }
 
         for (const connection of connections) {
-            this.mapConnections.push(new MapConnection(connection));
+            this.connections.push(new MapConnection(connection));
         }
 
 
@@ -37,7 +37,7 @@ export class MapManager {
     }
 
     build(): void {
-        for (const connection of this.mapConnections) {
+        for (const connection of this.connections) {
             connection.build();
         }
     }

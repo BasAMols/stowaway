@@ -40,7 +40,7 @@ function horizontal(data: {
             backPosition = backPosition.add(o.offset);
         }
 
-        mapLocations[frontKey] = [frontPosition, 1.02];
+        mapLocations[frontKey] = [frontPosition, 1.03];
         mapLocations[backKey] = [backPosition, 1.00];
 
         if (!data.excludeDirect?.includes(index)) mapConnections.push({ from: frontKey, to: backKey })
@@ -60,8 +60,8 @@ function stairs(data: {
     from: string;
     to: string;
 }) {
-    mapConnections.push({ from: data.from + '12Back', to: data.to + '12' })
-    mapConnections.push({ from: data.from + '22Back', to: data.to + '22' })
+    mapConnections.push({ from: data.from + '11Back', to: data.to + '11' })
+    mapConnections.push({ from: data.from + '20Back', to: data.to + '20' })
 }
 
 function task(data: {
@@ -84,88 +84,85 @@ export const mapConnections: {
 }[] = [];
 
 const stairOffset = [
-    { index: 12, offset: new Vector2(+6, 0) },
-    { index: 22, offset: new Vector2(-15, 0) },
+    { index: 11, offset: new Vector2(7, 0) },
 ]
 
 horizontal({
-    name: 'topDeckTop', start: 1, to: 5, position: new Vector2(0, 920), distance: 50,
+    name: 'topDeckTop', start: 1, to: 5, position: new Vector2(0, 1230), distance: 50,
     offset: [
         ...stairOffset,
-        { index: 1, offset: new Vector2(30, 0) },
-        { index: 5, offset: new Vector2(-10, 0) }
+        { index: 1, offset: new Vector2(10, 0) },
+        { index: 5, offset: new Vector2(-30, 0) }
     ]
 });
 horizontal({
-    name: 'topDeck', start: 5, to: 8, position: new Vector2(0, 955), distance: 50,
+    name: 'topDeck', start: 5, to: 8, position: new Vector2(0, 1265), distance: 50,
     offset: [
         ...stairOffset,
-        { index: 5, offset: new Vector2(30, 0) }
-    ]
-});
-
-horizontal({
-    name: 'bridgeDeckCabin', start: 1, to: 4, position: new Vector2(0, 988), distance: 50,
-    offset: [
-        ...stairOffset,
-        { index: 1, offset: new Vector2(30, 0) },
-        { index: 4, offset: new Vector2(0, 0) }
+        { index: 5, offset: new Vector2(5, 0) },
+        { index: 8, offset: new Vector2(-35, 0) }
     ]
 });
 
 horizontal({
-    name: 'burrowDeck', start: 2, to: 4, position: new Vector2(0, 1053), distance: 50,
+    name: 'bridgeDeckCabin', start: 1, to: 4, position: new Vector2(0, 1293), distance: 50,
     offset: [
         ...stairOffset,
-        { index: 2, offset: new Vector2(20, 0) },
-        { index: 4, offset: new Vector2(-20, 0) }
+        { index: 1, offset: new Vector2(30, 0) },
+        { index: 4, offset: new Vector2(-30, 0) }
+    ]
+});
+
+horizontal({
+    name: 'burrowDeck', start: 2, to: 4, position: new Vector2(0, 1353), distance: 50,
+    offset: [
+        ...stairOffset,
+        { index: 3, offset: new Vector2(-25, 0) },
+        { index: 4, offset: new Vector2(-45, 0) }
     ]
 });
 horizontal({
-    name: 'bridgeDeck', start: 4, to: 11, position: new Vector2(0, 1020), distance: 50,
+    name: 'bridgeDeck', start: 4, to: 10, position: new Vector2(0, 1322), distance: 50,
     offset: [
         ...stairOffset,
-        { index: 4, offset: new Vector2(40, 0) },
+        { index: 4, offset: new Vector2(10, 0) },
         { index: 5, offset: new Vector2(20, 0) },
-        { index: 10, offset: new Vector2(-15, 0) },
-        { index: 11, offset: new Vector2(-15, 0) },
+        { index: 10, offset: new Vector2(-20, 0) },
     ],
     // excludeForward: [11, 12, 21, 22, 14, 23],
     // excludeBackward: [11, 12, 21, 22, 14, 23],
     // excludeDirect: [12, 22, 23],
 });
 horizontal({
-    name: 'mainDeck', start: 11, to: 25, position: new Vector2(0, 1063), distance: 50,
+    name: 'mainDeck', start: 10, to: 22, position: new Vector2(0, 1360), distance: 50,
     offset: [...stairOffset],
     excludeForward: [11, 12, 21, 22, 14, 23],
     excludeBackward: [11, 12, 21, 22, 14, 23],
     excludeDirect: [12, 22, 23],
 });
 horizontal({
-    name: 'gunDeck', start: 3, to: 29, position: new Vector2(0, 1131), distance: 50,
+    name: 'gunDeck', start: 2, to: 26, position: new Vector2(0, 1430), distance: 50,
     offset: [
         ...stairOffset,
+        { index: 2, offset: new Vector2(20, 0) },
         { index: 11, offset: new Vector2(20, 0) },
     ],
     excludeForward: [7, 8, 9, 10, 11, 12, 21, 22, 14, 23],
     excludeBackward: [7, 8, 9, 10, 11, 12, 21, 22, 14, 23],
     excludeDirect: [7, 8, 9, 10, 12, 22, 23],
-
 });
 horizontal({
-    name: 'orlopDeck', start: 5, to: 26, position: new Vector2(0, 1196), distance: 50,
+    name: 'orlopDeck', start: 4, to: 24, position: new Vector2(0, 1485), distance: 50,
     offset: [
         ...stairOffset,
-        { index: 5, offset: new Vector2(-25, 0) },
         { index: 11, offset: new Vector2(20, 0) },
     ],
     excludeForward: [10, 11, 12, 21, 22, 14, 23],
     excludeBackward: [10, 11, 12, 21, 22, 14, 23],
     excludeDirect: [12, 22, 23],
-
 });
 horizontal({
-    name: 'cargoDeck', start: 6, to: 25, position: new Vector2(0, 1268), distance: 50,
+    name: 'cargoDeck', start: 6, to: 22, position: new Vector2(0, 1545), distance: 50,
     offset: [...stairOffset,],
     excludeForward: [11, 12, 11, 12, 21, 22, 14, 23],
     excludeBackward: [11, 12, 21, 22, 14, 23],
@@ -178,10 +175,10 @@ stairs({ from: 'gunDeck', to: 'orlopDeck' })
 stairs({ from: 'orlopDeck', to: 'cargoDeck' })
 
 mapConnections.push({ from: 'topDeckTop05Back', to: 'topDeck05Back' });
-mapConnections.push({ from: 'topDeck08Back', to: 'bridgeDeck10Back' });
+mapConnections.push({ from: 'topDeck08Back', to: 'bridgeDeck09Back' });
 mapConnections.push({ from: 'bridgeDeckCabin04Back', to: 'bridgeDeck04Back' });
 mapConnections.push({ from: 'burrowDeck04Back', to: 'bridgeDeck04Back' });
-mapConnections.push({ from: 'bridgeDeck11Back', to: 'mainDeck12Back' });
+mapConnections.push({ from: 'bridgeDeck10Back', to: 'mainDeck11Back' });
 
 
 

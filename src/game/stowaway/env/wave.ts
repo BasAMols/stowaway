@@ -59,7 +59,7 @@ export class Ocean {
                 const colorOffset = $.flags.night ? (offset * 0.2 + 0.3) : (offset * 0.1 + 0.9);
                 const colorDay = [130 * colorOffset, 160 * colorOffset, 200 * colorOffset, 1] as [number, number, number, number];
                 const colorNight = [28 * colorOffset, 42 * colorOffset, 58 * colorOffset, 1] as [number, number, number, number];
-                new Wave(790 + offset * 10 * 25, 4 * offset, 0, colorDay, colorNight, 0.0005, 1, offset);
+                new Wave(1090 + offset * 10 * 25, 4 * offset, 0, colorDay, colorNight, 0.0005, 1, offset);
             })('wave' + (i + 1), i * 0.05 - 0.02)
         }
     }
