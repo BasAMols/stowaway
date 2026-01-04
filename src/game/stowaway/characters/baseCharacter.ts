@@ -37,6 +37,6 @@ export class BaseCharacter extends CVE {
     }
 
     render() {
-        this.activeSprite.render($.canvas, new Vector2(-15, -50), 0.45);
+        this.activeSprite.render($.canvas, new Vector2(-15, -50), 0.48);
     }
 }

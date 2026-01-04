@@ -18,11 +18,14 @@ export class Mover {
 
     tick() {
         this.checkInput();
+        if (this.input) {
+            this.target.transform.setPosition(this.target.transform.position.add(this.input.multiply(this.speed)));
+        }
     }
 
     checkInput() {
         this.input = undefined;
-        const up = Number($.keyboard.pressed('w')) - Number($.keyboard.pressed('s'));
+        const up = Number($.keyboard.pressed('s')) - Number($.keyboard.pressed('w'));
         const left = Number($.keyboard.pressed('d')) - Number($.keyboard.pressed('a'));
         if (up !== 0 || left !== 0) {
             this.input = new Vector2(left, up);

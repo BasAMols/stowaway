@@ -31,7 +31,7 @@ export class StowawayGame extends BaseGame<flags, values> {
     pc: PC;
 
     constructor(canvas: HTMLCanvasElement, tooltip: Ref<string, string>) {
-        super(canvas, { open: true, openAll: false, debug: false, night: false, }, { speed: 1, zoom: 10 });
+        super(canvas, { open: false, openAll: false, debug: false, night: false, }, { speed: 1, zoom: 5 });
 
         $.tooltip = tooltip;
         $.game = this;
@@ -53,7 +53,7 @@ export class StowawayGame extends BaseGame<flags, values> {
         new StaticCharacter(new Vector2(450 + 60, 1233 - 2), 'idle', 1.02, 'idle', true);
         this.pc = new PC();
 
-        this.pc.transform.setPosition(new Vector2(400, 1230));
+        this.pc.transform.setPosition(new Vector2(950, 1170));
 
 
         $.camera.addToZoomLayer(2, 'areaManager', new CQuick({
@@ -66,7 +66,7 @@ export class StowawayGame extends BaseGame<flags, values> {
             },
         }), 1);
 
-        $.camera.focus = new Vector2(500, 1230);
+        $.camera.focus = new Vector2(1100, 1200);
         $.mover.target = this.pc;
     }
 

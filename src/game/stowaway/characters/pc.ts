@@ -9,7 +9,7 @@ import { Utils } from "src/game/util/math/util";
 
 
 export class PC extends BaseCharacter {
-    speed: number = 0.05;
+    speed: number = 0.5;
     targetPosition: Vector2;
     running: boolean = false;
     target: Target;
@@ -56,17 +56,17 @@ export class PC extends BaseCharacter {
             $.camera.setDynamicLayerParallax('pc', target[1]);
         }
 
-        if (this.targetPosition) {
-            const speed = this.running ? this.speed * 3 : this.speed;
-            if (this.targetPosition.subtract(this.transform.position).magnitude() < speed / $.tick.deltaTime) {
-                this.transform.setPosition(this.targetPosition);
-                this.targetPosition = undefined;
-                this.running = false;
-                this.target.visible = false;
-            } else {
-                this.transform.setPosition(this.transform.position.moveTowards(this.targetPosition, speed * $.tick.deltaTime));
-            }
-        }
+        // if (this.targetPosition) {
+        //     const speed = this.running ? this.speed * 3 : this.speed;
+        //     if (this.targetPosition.subtract(this.transform.position).magnitude() < speed / $.tick.deltaTime) {
+        //         this.transform.setPosition(this.targetPosition);
+        //         this.targetPosition = undefined;
+        //         this.running = false;
+        //         this.target.visible = false;
+        //     } else {
+        //         this.transform.setPosition(this.transform.position.moveTowards(this.targetPosition, speed * $.tick.deltaTime));
+        //     }
+        // }
         const newPosition = this.transform.position;
         const lastPosition = this.lastPosition;
         if (lastPosition.subtract(newPosition).magnitude() > 0) {
