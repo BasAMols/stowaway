@@ -9,10 +9,10 @@ export class Sky extends CVE {
     constructor() {
         super();
         $.camera.addToZoomLayer(0.0, 'sky', this, 1);
-        void $.loader.loadImage('public/nightSky.jpg').then((image) => {
+        void $.loader.loadImage('nightSky.jpg').then((image) => {
             this.nightSkyImage = image;
         });
-        void $.loader.loadImage('public/daySky.jpg').then((image) => {
+        void $.loader.loadImage('daySky.jpg').then((image) => {
             this.daySkyImage = image;
         });
     }
