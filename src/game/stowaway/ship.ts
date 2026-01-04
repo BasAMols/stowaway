@@ -18,7 +18,7 @@ export class ShipPart extends CVE {
         opacity: number;
     }
     static offset: Vector2 = new Vector2(250, -100);
-    static shipScale: number = 1;
+    static shipScale: number = 1 * (new URLSearchParams(window.location.search).get('lq') === '1' ? 1 : 2);
     lastTheme: number = 0;
 
     constructor(url: string, parallax: number, private foreground: boolean = false, private roi: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 1783, height: 1541 }) {
@@ -44,7 +44,7 @@ export class ShipPart extends CVE {
         // });
         // console.log('day_' + url);
 
-        void $.loader.loadImage('ship/day_' + url).then((image) => {
+        void $.loader.loadImage('ship/day_' + url + ($.flags.hq ? '_hq' : '') + '.png').then((image) => {
             this.themes.push({
                 timeData: [[5, 0], [8, 1], [17, 1], [20, 0]],
                 image: image,
@@ -52,7 +52,7 @@ export class ShipPart extends CVE {
             });
             // this.renderFirst(this.themes[0]!);
         });
-        void $.loader.loadImage('ship/night_' + url).then((image) => {
+        void $.loader.loadImage('ship/night_' + url + ($.flags.hq ? '_hq' : '') + '.png').then((image) => {
             this.themes.push({
                 timeData: [[5, 1], [8, 0], [17, 0], [20, 1]],
                 image: image,
@@ -111,12 +111,12 @@ export class Ship {
         for (let i = 0; i < 7; i++) {
             const o = 0.97 + i * 0.015;
             new ShipPart(
-                i.toString().padStart(4, '0') + '.png', o,
+                i.toString().padStart(4, '0'), o,
                 (o) > 1.03,
                 { x: 0, y: 800, width: 1783, height: 1541 - 800 }
             )
             new ShipPart(
-                i.toString().padStart(4, '0') + '.png', o + 0.0001,
+                i.toString().padStart(4, '0'), o + 0.0001,
                 false,
                 { x: 0, y: 0, width: 1783, height: 800 }
             );

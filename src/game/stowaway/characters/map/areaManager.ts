@@ -69,8 +69,8 @@ export class AreaManager {
         ] as [number, number][][]).forEach((area) => {
             this.areas.push({
                 points: area.map(point => new Vector2(
-                    point[0] * ShipPart.shipScale * 0.935 - 15,
-                    point[1] * ShipPart.shipScale * 0.935 + 320
+                    (point[0] * 0.935 - 15) * ShipPart.shipScale,
+                    (point[1] * 0.935 + 320) * ShipPart.shipScale,
                 )),
                 opacity: 0,
                 active: false,

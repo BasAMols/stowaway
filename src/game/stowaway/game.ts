@@ -23,7 +23,7 @@ import { LayerAsset } from "../util/layerAsset";
 import { Islands } from "./env/islands";
 import { Mover } from "./characters/mover";
 
-export type flags = 'open' | 'openAll' | 'debug' | 'night';
+export type flags = 'open' | 'openAll' | 'debug' | 'night' | 'hq';
 export type values = 'speed' | 'zoom';
 export class StowawayGame extends BaseGame<flags, values> {
     msPerDay: number = Infinity;
@@ -31,8 +31,9 @@ export class StowawayGame extends BaseGame<flags, values> {
     pc: PC;
 
     constructor(canvas: HTMLCanvasElement, tooltip: Ref<string, string>) {
-        super(canvas, { open: false, openAll: false, debug: false, night: false, }, { speed: 1, zoom: 5 });
+        super(canvas, { open: false, openAll: false, debug: false, night: false, hq: false }, { speed: 1, zoom: 5 });
 
+        $.flags.hq = new URLSearchParams(window.location.search).get('lq') === '1' ? false : true;
         $.tooltip = tooltip;
         $.game = this;
         $.routeManager = new RouteManager();

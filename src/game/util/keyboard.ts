@@ -17,7 +17,6 @@ export class Keyboard {
 
     constructor(canvas: Canvas) {
         document.body.addEventListener('keydown', (e: KeyboardEvent) => {
-            console.log(e.key.toLowerCase());
             this.keys[e.key.toLowerCase()] = 1;
         });
         document.body.addEventListener('keyup', (e: KeyboardEvent) => {
