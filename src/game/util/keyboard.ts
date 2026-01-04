@@ -17,9 +17,7 @@ export class Keyboard {
 
     constructor(canvas: Canvas) {
         document.body.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (this.keys[e.key.toLowerCase()]) {
-                return;
-            }
+            console.log(e.key.toLowerCase());
             this.keys[e.key.toLowerCase()] = 1;
         });
         document.body.addEventListener('keyup', (e: KeyboardEvent) => {
@@ -27,18 +25,18 @@ export class Keyboard {
         });
     }
 
-    buttonDown(key: string, mod: { shift: boolean, ctrl: boolean, alt: boolean } = { shift: false, ctrl: false, alt: false }): number {
+    buttonDown(key: string, mod?: { shift: boolean, ctrl: boolean, alt: boolean }): number {
         if (mod && Object.entries(mod).some(([key, value]) => value || (this.keys[key.toLowerCase()] ?? 0) > 0)) {
             return 0;
         }
         return this.keys[key.toLowerCase()] ?? 0;
     }
 
-    pressed(key: string, mod: { shift: boolean, ctrl: boolean, alt: boolean } = { shift: false, ctrl: false, alt: false }): boolean {
+    pressed(key: string, mod?: { shift: boolean, ctrl: boolean, alt: boolean }): boolean {
         return this.buttonDown(key, mod) > 0;
     }
 
-    press(key: string, mod: { shift: boolean, ctrl: boolean, alt: boolean } = { shift: false, ctrl: false, alt: false }): boolean {
+    press(key: string, mod?: { shift: boolean, ctrl: boolean, alt: boolean }): boolean {
         return this.buttonDown(key, mod) === 2;
     }
 

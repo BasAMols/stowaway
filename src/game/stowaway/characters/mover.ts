@@ -2,11 +2,12 @@ import { Vector2 } from "src/game/util/math/vector2";
 import { PC } from "./pc";
 import { MapLocation } from "./map/mapLocation";
 import { MapConnection } from "./map/mapConnection";
+import { MathUtil } from "src/game/util/math/math";
 
 export class Mover {
 
     input: Vector2 | undefined;
-    speed: number = 5;
+    camera: Vector2 | undefined;
     target: PC;
 
     currentLocation: MapLocation | undefined;
@@ -19,7 +20,10 @@ export class Mover {
     tick() {
         this.checkInput();
         if (this.input) {
-            this.target.transform.setPosition(this.target.transform.position.add(this.input.multiply(this.speed)));
+            this.target.transform.setPosition(this.target.transform.position.add(this.input));
+        }
+        if (this.camera) {
+            $.camera.focus = $.camera.focus.add(this.camera.multiply(this.target.speed));
         }
     }
 
@@ -28,11 +32,22 @@ export class Mover {
         const up = Number($.keyboard.pressed('s')) - Number($.keyboard.pressed('w'));
         const left = Number($.keyboard.pressed('d')) - Number($.keyboard.pressed('a'));
         if (up !== 0 || left !== 0) {
-            this.input = new Vector2(left, up);
-            this.speed = this.target.speed;
+            this.input = new Vector2(left, up).multiply(this.target.speed).multiply($.tick.deltaTime);
         } else {
             this.input = undefined;
-            this.speed = 0;
+        }
+        this.camera = undefined;
+        const upCamera = Number($.keyboard.pressed('arrowDown')) - Number($.keyboard.pressed('arrowUp'));
+        const leftCamera = Number($.keyboard.pressed('arrowRight')) - Number($.keyboard.pressed('arrowLeft'));
+        if (upCamera !== 0 || leftCamera !== 0) {
+            this.camera = new Vector2(leftCamera, upCamera).multiply($.tick.deltaTime, 10);
+        } else {
+            this.camera = undefined;
+        }
+
+        const zoom = Number($.keyboard.pressed('pageUp')) - Number($.keyboard.pressed('pageDown'));
+        if (zoom !== 0) {
+            $.values.zoom = MathUtil.clamp($.values.zoom + (zoom * 0.001 * $.values.zoom * $.tick.deltaTime), 1.6, 40);
         }
     }
 

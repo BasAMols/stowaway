@@ -9,11 +9,10 @@ import { Utils } from "src/game/util/math/util";
 
 
 export class PC extends BaseCharacter {
-    speed: number = 0.5;
+    speed: number = 0.05;
     targetPosition: Vector2;
     running: boolean = false;
     target: Target;
-    front
 
     constructor() {
         super();
@@ -51,13 +50,15 @@ export class PC extends BaseCharacter {
     }
     preTransform(): void {
 
+        this.running = $.keyboard.pressed('shift');
         const target = $.areaManager.target(this.transform.position);
         if (target) {
             $.camera.setDynamicLayerParallax('pc', target[1]);
         }
+        this.speed = this.running ? (0.05 * 3) : 0.05;
+
 
         // if (this.targetPosition) {
-        //     const speed = this.running ? this.speed * 3 : this.speed;
         //     if (this.targetPosition.subtract(this.transform.position).magnitude() < speed / $.tick.deltaTime) {
         //         this.transform.setPosition(this.targetPosition);
         //         this.targetPosition = undefined;

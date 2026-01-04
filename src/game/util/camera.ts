@@ -44,7 +44,7 @@ export class Camera {
             $.values.zoom = MathUtil.clamp($.values.zoom + (delta * -0.0002 * $.values.zoom), 1.6, 40);
         });
         this.mouse.addDragListener((delta) => {
-            this.focus = this.focus.add(delta.multiply(-1 / $.values.zoom / 0.9)).clamp(new Vector2(0, 0), new Vector2(3840, 1350));
+            this.focus = this.focus.add(delta.multiply(-1 / $.values.zoom / 0.8)).clamp(new Vector2(0, 0), new Vector2(3840, 1350));
         });
     }
 
