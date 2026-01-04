@@ -15,7 +15,10 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
+    "@vitejs/plugin-react": "^4.2.1",
+    "node": "^24.12.0",
     "quasar": "^2.16.0",
+    "vite": "^5.4.2",
     "vue": "^3.5.22",
     "vue-router": "^4.0.12"
   },
@@ -32,8 +35,7 @@
     "typescript": "^5.9.2",
     "vite-plugin-checker": "^0.11.0",
     "vue-eslint-parser": "^10.2.0",
-    "vue-tsc": "^3.0.7",
-    "vite": "^5.4.0"
+    "vue-tsc": "^3.0.7"
   },
   "engines": {
     "node": "^28 || ^26 || ^24 || ^22 || ^20",
